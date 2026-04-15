@@ -369,7 +369,7 @@
 
                 <div class="staticrypt-heading">
                     <span class="eyebrow">Starks.Design · Client Portal</span>
-                    <h1 class="staticrypt-title">/*[|template_title|]*/0</h1>
+                    <h1 class="staticrypt-title" id="staticryptTitle">/*[|template_title|]*/0</h1>
                     <p class="staticrypt-instructions">/*[|template_instructions|]*/0</p>
                     <span class="accent-line"></span>
                 </div>
@@ -435,6 +435,16 @@
             };
 
             const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
+
+            // Title-Zeilenumbruch: " – " oder " — " splittet in 2 Zeilen
+            (function () {
+                const titleEl = document.getElementById("staticryptTitle");
+                if (!titleEl) return;
+                const parts = titleEl.textContent.split(/\s+[–—-]\s+/);
+                if (parts.length >= 2) {
+                    titleEl.innerHTML = parts.map(p => `<span class="title-line">${p.trim()}</span>`).join("<br>");
+                }
+            })();
 
             window.onload = async function () {
                 const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
