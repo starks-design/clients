@@ -15,6 +15,14 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Azeret+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
             :root {
+                /* Fluid Typography (Lumos-System analog starks-design-system/core.css) */
+                --size-unit: 16;
+                --size-container-ideal: 1920;
+                --size-container-min: 992px;
+                --size-container-max: 2540px;
+                --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+                --size-font: max(15px, calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit))));
+
                 --bg-00: #0D0B0B;
                 --bg-03: color-mix(in srgb, #F1EBE5 3%, #0D0B0B);
                 --bg-05: color-mix(in srgb, #F1EBE5 5%, #0D0B0B);
@@ -43,7 +51,7 @@
 
             .staticrypt-body {
                 font-family: var(--font-primary);
-                font-size: 15px;
+                font-size: var(--size-font);
                 background: var(--bg-00);
                 color: var(--fg);
                 -webkit-font-smoothing: antialiased;
