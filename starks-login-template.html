@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="staticrypt-html">
+<html class="staticrypt-html" lang="de">
     <head>
         <meta charset="utf-8" />
         <title>/*[|template_title|]*/0</title>
@@ -11,227 +11,450 @@
         <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
         <meta http-equiv="pragma" content="no-cache" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Azeret+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
+            :root {
+                --bg-00: #0D0B0B;
+                --bg-03: color-mix(in srgb, #F1EBE5 3%, #0D0B0B);
+                --bg-05: color-mix(in srgb, #F1EBE5 5%, #0D0B0B);
+                --bg-10: color-mix(in srgb, #F1EBE5 10%, #0D0B0B);
+                --fg: #F1EBE5;
+                --fg-muted: color-mix(in srgb, #F1EBE5 55%, transparent);
+                --fg-faded: color-mix(in srgb, #F1EBE5 28%, transparent);
+                --border: color-mix(in srgb, #F1EBE5 12%, transparent);
+                --brand: #9602ff;
+                --brand-soft: color-mix(in srgb, #9602ff 15%, transparent);
+                --accent: #E8632B;
+                --success: #2ECC71;
+                --ease-starks: cubic-bezier(0.625, 0.05, 0, 1);
+                --radius-sm: 0.5em;
+                --radius-md: 0.75em;
+                --radius-lg: 1em;
+                --radius-round: 100vw;
+                --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                --font-secondary: 'Azeret Mono', ui-monospace, monospace;
+            }
+
             * { margin: 0; padding: 0; box-sizing: border-box; }
+            html, body { height: 100%; }
+            html { scrollbar-width: none; }
+            body::-webkit-scrollbar { display: none; }
 
-            .staticrypt-html { height: 100%; }
-            .staticrypt-body { height: 100%; margin: 0; }
-
-            .staticrypt-content {
-                height: 100%;
-                background: #0D0B0B;
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            .staticrypt-body {
+                font-family: var(--font-primary);
+                font-size: 15px;
+                background: var(--bg-00);
+                color: var(--fg);
                 -webkit-font-smoothing: antialiased;
+                overflow-x: hidden;
+            }
+
+            /* Cover-Glow Blobs als dekorativer Hintergrund */
+            .cover-glow {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 0;
+                overflow: hidden;
+            }
+            .cover-glow .blob {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(120px);
+                opacity: 0.35;
+            }
+            .blob-1 {
+                width: 560px; height: 560px;
+                background: radial-gradient(circle, var(--brand) 0%, transparent 70%);
+                top: -120px;
+                left: -120px;
+            }
+            .blob-2 {
+                width: 640px; height: 640px;
+                background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+                bottom: -180px;
+                right: -160px;
+                opacity: 0.18;
+            }
+
+            /* Haupt-Content */
+            .staticrypt-content {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                padding: 3em 1.5em 2em;
+            }
+
+            /* Oben: Logo + Heading + Card */
+            .staticrypt-main {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-            }
-
-            .staticrypt-logo {
-                text-align: center;
-                margin-bottom: 32px;
-            }
-            .staticrypt-logo svg {
-                width: 48px;
-                height: auto;
-                fill: #E8632B;
-                opacity: 0.9;
-            }
-
-            .staticrypt-page {
+                flex: 1;
                 width: 100%;
-                max-width: 400px;
-                padding: 0 24px;
+                max-width: 32em;
+                gap: 2em;
             }
 
-            .staticrypt-form {
-                background: rgba(241, 235, 229, 0.04);
-                border: 1px solid rgba(241, 235, 229, 0.08);
-                border-radius: 16px;
-                padding: 48px 40px;
-                backdrop-filter: blur(20px);
+            /* Triangle Logo — unverändert, orange, zentriert oben */
+            .staticrypt-logo svg {
+                width: 4.5em;
+                height: auto;
+                fill: var(--accent);
+                opacity: 0.95;
+                transition: transform 0.4s var(--ease-starks);
+            }
+            .staticrypt-logo:hover svg {
+                transform: translateY(-4px) rotate(-4deg);
             }
 
-            .staticrypt-title {
-                font-size: 20px;
+            /* Heading-Gruppe */
+            .staticrypt-heading {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75em;
+            }
+            .eyebrow {
+                font-family: var(--font-secondary);
+                font-size: 0.75em;
                 font-weight: 600;
-                color: #F1EBE5;
-                margin-bottom: 4px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--fg-muted);
             }
-
+            .staticrypt-title {
+                font-family: var(--font-primary);
+                font-size: 2.25em;
+                font-weight: 700;
+                line-height: 1.1;
+                letter-spacing: -0.02em;
+                color: var(--fg);
+            }
             .staticrypt-instructions {
-                font-size: 14px;
-                color: rgba(241, 235, 229, 0.5);
-                margin-bottom: 32px;
-                line-height: 1.5;
+                font-size: 1em;
+                font-weight: 400;
+                line-height: 1.55;
+                color: var(--fg-muted);
+                max-width: 28em;
+            }
+            .accent-line {
+                width: 3em;
+                height: 2px;
+                background: var(--brand);
+                margin-top: 0.5em;
+                border-radius: 2px;
             }
 
             .staticrypt-hr { display: none; }
 
+            /* Form-Card */
+            .staticrypt-form {
+                width: 100%;
+                background: color-mix(in srgb, var(--bg-00) 70%, transparent);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 2em;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+            }
+
+            /* Password-Feld */
             .staticrypt-password-container {
                 position: relative;
-                background: rgba(241, 235, 229, 0.06);
-                border: 1px solid rgba(241, 235, 229, 0.12);
-                border-radius: 10px;
-                margin-bottom: 16px;
-                transition: border-color 0.2s;
+                background: var(--bg-05);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                transition: border-color 0.2s var(--ease-starks), background 0.2s var(--ease-starks);
             }
             .staticrypt-password-container:focus-within {
-                border-color: #E8632B;
+                border-color: var(--brand);
+                background: var(--bg-10);
             }
 
             .staticrypt-form input[type="password"],
             .staticrypt-form input[type="text"] {
                 background: transparent;
                 border: 0;
-                font-family: 'Inter', sans-serif;
-                font-size: 15px;
-                color: #F1EBE5;
+                font-family: var(--font-primary);
+                font-size: 1em;
+                color: var(--fg);
                 outline: 0;
-                padding: 14px 44px 14px 16px;
+                padding: 1em 3em 1em 1.25em;
                 width: 100%;
-                box-sizing: border-box;
             }
-            .staticrypt-form input::placeholder {
-                color: rgba(241, 235, 229, 0.3);
-            }
+            .staticrypt-form input::placeholder { color: var(--fg-faded); }
 
             .staticrypt-toggle-password-visibility {
                 cursor: pointer;
-                height: 18px;
-                width: 18px;
-                opacity: 0.3;
-                padding: 12px;
+                height: 1.1em;
+                width: 1.1em;
+                opacity: 0.35;
+                padding: 0.85em;
                 position: absolute;
-                right: 4px;
+                right: 0.3em;
                 top: 50%;
                 transform: translateY(-50%);
                 filter: invert(1);
-                transition: opacity 0.2s;
+                transition: opacity 0.2s var(--ease-starks);
+                box-sizing: content-box;
             }
-            .staticrypt-toggle-password-visibility:hover {
-                opacity: 0.6;
-            }
+            .staticrypt-toggle-password-visibility:hover { opacity: 0.7; }
 
-            .staticrypt-form .staticrypt-decrypt-button {
-                font-family: 'Inter', sans-serif;
-                text-transform: none;
-                letter-spacing: 0.02em;
-                outline: 0;
-                background: #E8632B;
-                width: 100%;
-                border: 0;
-                padding: 14px;
-                color: #F1EBE5;
-                font-size: 15px;
-                font-weight: 600;
-                border-radius: 10px;
-                cursor: pointer;
-                transition: background 0.2s, transform 0.1s;
-            }
-            .staticrypt-form .staticrypt-decrypt-button:hover {
-                background: #d4571f;
-                filter: none;
-            }
-            .staticrypt-form .staticrypt-decrypt-button:active {
-                transform: scale(0.98);
-                filter: none;
-            }
-
+            /* Remember Me */
             label.staticrypt-remember {
                 display: flex;
                 align-items: center;
-                margin-bottom: 20px;
-                font-size: 13px;
-                color: rgba(241, 235, 229, 0.5);
+                font-family: var(--font-secondary);
+                font-size: 0.8em;
+                letter-spacing: 0.02em;
+                color: var(--fg-muted);
                 cursor: pointer;
+                user-select: none;
             }
             .staticrypt-remember input[type="checkbox"] {
-                transform: scale(1.2);
-                margin-right: 10px;
-                accent-color: #E8632B;
+                width: 1em;
+                height: 1em;
+                margin-right: 0.75em;
+                accent-color: var(--brand);
+                cursor: pointer;
             }
 
+            /* Decrypt Button — Brand-Lila */
+            .staticrypt-form .staticrypt-decrypt-button {
+                font-family: var(--font-primary);
+                font-size: 0.95em;
+                font-weight: 700;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                outline: 0;
+                background: var(--brand);
+                width: 100%;
+                border: 0;
+                padding: 1.05em;
+                color: #ffffff;
+                border-radius: var(--radius-md);
+                cursor: pointer;
+                transition: background 0.2s var(--ease-starks), transform 0.1s var(--ease-starks), box-shadow 0.2s var(--ease-starks);
+                box-shadow: 0 0 0 0 var(--brand-soft);
+            }
+            .staticrypt-form .staticrypt-decrypt-button:hover {
+                background: color-mix(in srgb, var(--brand) 85%, white);
+                box-shadow: 0 8px 24px -8px var(--brand-soft);
+            }
+            .staticrypt-form .staticrypt-decrypt-button:active {
+                transform: scale(0.98);
+            }
+
+            /* Divider */
+            .section-divider {
+                width: 100%;
+                max-width: 32em;
+                border-top: 1px solid var(--border);
+                margin: 2em 0 1.5em;
+            }
+
+            /* Kontakt-Block */
+            .staticrypt-contact {
+                width: 100%;
+                max-width: 32em;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5em;
+                text-align: center;
+            }
+            .staticrypt-contact .eyebrow {
+                margin-bottom: 0.5em;
+            }
+            .staticrypt-contact .contact-name {
+                font-size: 1.1em;
+                font-weight: 600;
+                color: var(--fg);
+                letter-spacing: -0.01em;
+            }
+            .staticrypt-contact .contact-role {
+                font-size: 0.85em;
+                color: var(--fg-muted);
+                margin-bottom: 0.75em;
+            }
+            .staticrypt-contact .contact-rows {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.4em 1.5em;
+                font-family: var(--font-secondary);
+                font-size: 0.8em;
+                color: var(--fg-muted);
+            }
+            .staticrypt-contact .contact-rows a {
+                color: var(--fg-muted);
+                text-decoration: none;
+                transition: color 0.2s var(--ease-starks);
+            }
+            .staticrypt-contact .contact-rows a:hover { color: var(--fg); }
+
+            /* Footer Logotype */
+            .staticrypt-footer {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1em;
+                margin-top: 2em;
+                opacity: 0.8;
+            }
+            .logotype {
+                font-family: var(--font-primary);
+                font-style: italic;
+                font-size: 1.1em;
+                letter-spacing: -0.03em;
+                color: var(--fg);
+                display: inline-flex;
+                align-items: baseline;
+                white-space: nowrap;
+            }
+            .logotype strong { font-weight: 900; font-style: italic; }
+            .logotype span { font-weight: 400; font-style: italic; letter-spacing: -0.06em; }
+
+            .staticrypt-copyright {
+                font-family: var(--font-secondary);
+                font-size: 0.7em;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--fg-faded);
+            }
+
+            /* Hidden-Utility */
             .hidden { display: none !important; }
 
+            /* Spinner */
             .staticrypt-spinner-container {
-                height: 100%;
+                height: 100vh;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: #0D0B0B;
+                background: var(--bg-00);
+                position: relative;
+                z-index: 2;
             }
             .staticrypt-spinner {
                 display: inline-block;
-                width: 2rem;
-                height: 2rem;
-                border: 2px solid rgba(241, 235, 229, 0.15);
-                border-right-color: #E8632B;
+                width: 2.25rem;
+                height: 2.25rem;
+                border: 2px solid var(--border);
+                border-right-color: var(--brand);
                 border-radius: 50%;
                 animation: spinner-border 0.75s linear infinite;
             }
-            @keyframes spinner-border {
-                100% { transform: rotate(360deg); }
-            }
+            @keyframes spinner-border { 100% { transform: rotate(360deg); } }
 
-            .staticrypt-footer {
-                margin-top: 24px;
-                text-align: center;
-                font-size: 12px;
-                color: rgba(241, 235, 229, 0.2);
+            /* Entry-Animation */
+            @keyframes entry-fade {
+                from { opacity: 0; transform: translateY(14px); }
+                to { opacity: 1; transform: translateY(0); }
             }
+            .staticrypt-content > * { animation: entry-fade 0.55s var(--ease-starks) both; }
+            .staticrypt-content > *:nth-child(1) { animation-delay: 0.05s; }
+            .staticrypt-content > *:nth-child(2) { animation-delay: 0.15s; }
+            .staticrypt-content > *:nth-child(3) { animation-delay: 0.25s; }
 
-            @media (max-width: 480px) {
-                .staticrypt-form { padding: 36px 28px; }
+            /* Mobile */
+            @media (max-width: 560px) {
+                .staticrypt-content { padding: 2em 1em 1.5em; }
+                .staticrypt-title { font-size: 1.75em; }
+                .staticrypt-form { padding: 1.5em; }
+                .blob-1, .blob-2 { filter: blur(80px); opacity: 0.25; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .staticrypt-content > * { animation: none; }
+                .staticrypt-logo svg { transition: none; }
             }
         </style>
     </head>
 
     <body class="staticrypt-body">
+        <!-- Dekorative Glow-Blobs im Hintergrund -->
+        <div class="cover-glow" aria-hidden="true">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+        </div>
+
+        <!-- Loading Spinner -->
         <div id="staticrypt_loading" class="staticrypt-spinner-container">
             <div class="staticrypt-spinner"></div>
         </div>
 
+        <!-- Eigentlicher Login-Content -->
         <div id="staticrypt_content" class="staticrypt-content hidden">
-            <div class="staticrypt-page">
-                <div class="staticrypt-logo">
+
+            <!-- Oberer Haupt-Bereich: Logo + Heading + Card -->
+            <div class="staticrypt-main">
+                <div class="staticrypt-logo" aria-hidden="true">
                     <svg viewBox="0 0 491 425.2" xmlns="http://www.w3.org/2000/svg"><path d="M0,0l245.5,425.2L491,0H0ZM155.6,89.9h179.7l-89.9,155.6-89.8-155.6Z"/></svg>
                 </div>
-                <div class="staticrypt-form">
-                    <div>
-                        <p class="staticrypt-title">/*[|template_title|]*/0</p>
-                        <p class="staticrypt-instructions">/*[|template_instructions|]*/0</p>
-                    </div>
 
-                    <form id="staticrypt-form" action="#" method="post">
-                        <div class="staticrypt-password-container">
-                            <input
-                                id="staticrypt-password"
-                                type="password"
-                                name="password"
-                                placeholder="/*[|template_placeholder|]*/0"
-                                autofocus
-                            />
-                            <img
-                                class="staticrypt-toggle-password-visibility"
-                                alt="/*[|template_toggle_show|]*/0"
-                                title="/*[|template_toggle_show|]*/0"
-                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
-                            />
-                        </div>
-
-                        <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
-                            <input id="staticrypt-remember" type="checkbox" name="remember" />
-                            /*[|template_remember|]*/0
-                        </label>
-
-                        <input type="submit" class="staticrypt-decrypt-button" value="/*[|template_button|]*/0" />
-                    </form>
+                <div class="staticrypt-heading">
+                    <span class="eyebrow">Starks.Design · Client Portal</span>
+                    <h1 class="staticrypt-title">/*[|template_title|]*/0</h1>
+                    <p class="staticrypt-instructions">/*[|template_instructions|]*/0</p>
+                    <span class="accent-line"></span>
                 </div>
 
-                <div class="staticrypt-footer">Starks.Design — Client Portal</div>
+                <form id="staticrypt-form" class="staticrypt-form" action="#" method="post">
+                    <div class="staticrypt-password-container">
+                        <input
+                            id="staticrypt-password"
+                            type="password"
+                            name="password"
+                            placeholder="/*[|template_placeholder|]*/0"
+                            autocomplete="current-password"
+                            autofocus
+                        />
+                        <img
+                            class="staticrypt-toggle-password-visibility"
+                            alt="/*[|template_toggle_show|]*/0"
+                            title="/*[|template_toggle_show|]*/0"
+                            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
+                        />
+                    </div>
+
+                    <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
+                        <input id="staticrypt-remember" type="checkbox" name="remember" />
+                        /*[|template_remember|]*/0
+                    </label>
+
+                    <input type="submit" class="staticrypt-decrypt-button" value="/*[|template_button|]*/0" />
+                </form>
+            </div>
+
+            <!-- Unterer Bereich: Divider + Kontakt + Footer -->
+            <div class="section-divider"></div>
+
+            <div class="staticrypt-contact">
+                <span class="eyebrow">Fragen zum Zugang?</span>
+                <div class="contact-name">Viktor Stark</div>
+                <div class="contact-role">Starks.Design · Kempten/Allgäu</div>
+                <div class="contact-rows">
+                    <a href="mailto:info@viktorstark.de">info@viktorstark.de</a>
+                    <a href="tel:+4917555024470175">0175 5502447</a>
+                    <a href="https://starks.design" target="_blank" rel="noopener">starks.design</a>
+                </div>
+            </div>
+
+            <div class="staticrypt-footer">
+                <span class="logotype"><strong>starks</strong><span>.design</span></span>
+                <span class="staticrypt-copyright">© Starks.Design · Client Portal</span>
             </div>
         </div>
 
