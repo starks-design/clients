@@ -50,34 +50,6 @@
                 overflow-x: hidden;
             }
 
-            /* Cover-Glow Blobs als dekorativer Hintergrund */
-            .cover-glow {
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                z-index: 0;
-                overflow: hidden;
-            }
-            .cover-glow .blob {
-                position: absolute;
-                border-radius: 50%;
-                filter: blur(120px);
-                opacity: 0.35;
-            }
-            .blob-1 {
-                width: 560px; height: 560px;
-                background: radial-gradient(circle, var(--brand) 0%, transparent 70%);
-                top: -120px;
-                left: -120px;
-            }
-            .blob-2 {
-                width: 640px; height: 640px;
-                background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-                bottom: -180px;
-                right: -160px;
-                opacity: 0.18;
-            }
-
             /* Haupt-Content */
             .staticrypt-content {
                 position: relative;
@@ -102,16 +74,16 @@
                 gap: 2em;
             }
 
-            /* Triangle Logo — unverändert, orange, zentriert oben */
+            /* Triangle Logo — clean weiss, zentriert oben */
             .staticrypt-logo svg {
                 width: 4.5em;
                 height: auto;
-                fill: var(--accent);
+                fill: var(--fg);
                 opacity: 0.95;
                 transition: transform 0.4s var(--ease-starks);
             }
             .staticrypt-logo:hover svg {
-                transform: translateY(-4px) rotate(-4deg);
+                transform: translateY(-4px);
             }
 
             /* Heading-Gruppe */
@@ -374,7 +346,6 @@
                 .staticrypt-content { padding: 2em 1em 1.5em; }
                 .staticrypt-title { font-size: 1.75em; }
                 .staticrypt-form { padding: 1.5em; }
-                .blob-1, .blob-2 { filter: blur(80px); opacity: 0.25; }
             }
             @media (prefers-reduced-motion: reduce) {
                 .staticrypt-content > * { animation: none; }
@@ -384,12 +355,6 @@
     </head>
 
     <body class="staticrypt-body">
-        <!-- Dekorative Glow-Blobs im Hintergrund -->
-        <div class="cover-glow" aria-hidden="true">
-            <div class="blob blob-1"></div>
-            <div class="blob blob-2"></div>
-        </div>
-
         <!-- Loading Spinner -->
         <div id="staticrypt_loading" class="staticrypt-spinner-container">
             <div class="staticrypt-spinner"></div>
