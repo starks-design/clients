@@ -30,13 +30,12 @@
   /* ---------- Lenis ---------- */
   let lenis = null;
   if (!reduceMotion) {
+    // Touch bleibt nativ (volles iOS-Momentum) — syncTouch fühlte sich in jeder
+    // Konfiguration hakelig an; Lenis smoothed Wheel/Desktop, ScrollTrigger
+    // läuft auf Mobile mit dem nativen Scroll.
     lenis = new Lenis({
       duration: 1.15,
       easing: (t) => 1 - Math.pow(1 - t, 3),
-      syncTouch: true, // Smooth Scroll auch auf Touch/Mobile
-      syncTouchLerp: 0.12, // direkter am Finger — kein Gummiband-Gefühl
-      touchMultiplier: 1,
-      touchInertiaMultiplier: 20, // sanfter Auslauf (Default 35)
     });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
