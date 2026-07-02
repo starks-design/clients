@@ -453,6 +453,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .story-progress-chevron { width: 0.8rem; height: auto; color: var(--red); animation: chevpulse 1.6s ease-in-out infinite; transition: opacity 0.4s; }
 @keyframes chevpulse { 0%, 100% { transform: translateY(-2px); opacity: 0.45; } 50% { transform: translateY(2px); opacity: 1; } }
 html.no-motion .story-progress { display: none; }
+@media (max-width: 860px) {
+  /* Mobile: vertikaler Indikator an der rechten Kante */
+  .story-progress {
+    top: 50%; right: 1.1rem; transform: translateY(-50%);
+    flex-direction: column; gap: 0.9rem;
+  }
+  .story-progress-bars { flex-direction: column; gap: 5px; }
+  .story-progress-bars i { width: 3px; height: clamp(1.7rem, 5.5svh, 2.6rem); }
+  .story-progress-bars i::after { transform: scaleY(var(--p, 0)); transform-origin: top; }
+}
 
 /* Spec-Tabelle */
 .spec-table { width: 100%; border-collapse: collapse; }
@@ -464,6 +474,17 @@ html.no-motion .story-progress { display: none; }
 
 /* Empfehlungen / Related */
 .related { border-top: 1px solid var(--line); }
+.product-grid--related { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 860px) {
+  /* Mobile: horizontal wischbare Produktreihe */
+  .product-grid--related {
+    display: flex; overflow-x: auto; overflow-y: clip;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .product-grid--related::-webkit-scrollbar { display: none; }
+  .product-grid--related .product-card { flex: 0 0 74vw; scroll-snap-align: center; }
+}
 
 /* ---------- Über uns ---------- */
 .brands { position: relative; }

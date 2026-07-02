@@ -33,6 +33,9 @@
       duration: 1.15,
       easing: (t) => 1 - Math.pow(1 - t, 3),
       syncTouch: true, // Smooth Scroll auch auf Touch/Mobile
+      syncTouchLerp: 0.06, // weicheres Nachziehen
+      touchMultiplier: 0.9, // etwas weniger Weg pro Wisch
+      touchInertiaMultiplier: 15, // deutlich weniger Nachschleudern (Default 35)
     });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -204,12 +207,17 @@
     const base = track.innerHTML;
     while (track.scrollWidth < window.innerWidth * 2.2) track.innerHTML += base;
     const tween = gsap.to(track, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
+    // Konstante Laufrichtung; Scroll-Velocity gibt nur sanften Tempo-Boost
+    let targetScale = 1;
     ScrollTrigger.create({
       trigger: mq, start: "top bottom", end: "bottom top",
       onUpdate: (self) => {
-        tween.timeScale(gsap.utils.clamp(0.4, 4, Math.abs(self.getVelocity() / 260) + 1) * (self.direction || 1));
-        gsap.to(tween, { timeScale: self.direction || 1, duration: 0.9, overwrite: "auto" });
+        targetScale = gsap.utils.clamp(1, 3.5, 1 + Math.abs(self.getVelocity()) / 800);
       },
+    });
+    gsap.ticker.add(() => {
+      tween.timeScale(gsap.utils.interpolate(tween.timeScale(), targetScale, 0.06));
+      targetScale += (1 - targetScale) * 0.04;
     });
   });
 
