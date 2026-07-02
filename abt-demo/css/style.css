@@ -167,7 +167,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .nav-burger.is-open span:nth-child(2) { transform: translateY(-0.3rem) rotate(-45deg); }
 
 .mobile-menu {
-  position: fixed; inset: 0; z-index: 110; background: var(--ink);
+  /* unter der Nav (100), damit Logo + Burger-X darüber bedienbar bleiben */
+  position: fixed; inset: 0; z-index: 95; background: var(--ink);
   display: flex; flex-direction: column; justify-content: center; padding: var(--gutter);
   visibility: hidden;
 }
