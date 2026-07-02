@@ -311,7 +311,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   padding: 0 var(--gutter) clamp(2.5rem, 7vh, 5rem);
 }
 .showcase-eyebrow { margin-bottom: 1rem; }
-.showcase-title-wrap { position: relative; min-height: 2.2em; }
+.showcase-title-wrap { position: relative; min-height: calc(var(--size-h2) * 0.98); }
 .showcase-title { position: absolute; left: 0; bottom: 0; margin: 0; }
 .showcase-title .word { display: inline-block; overflow: hidden; vertical-align: bottom; }
 .showcase-title .word > span { display: inline-block; }
