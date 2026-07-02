@@ -29,7 +29,11 @@
   /* ---------- Lenis ---------- */
   let lenis = null;
   if (!reduceMotion) {
-    lenis = new Lenis({ duration: 1.15, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      syncTouch: true, // Smooth Scroll auch auf Touch/Mobile
+    });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -367,7 +371,9 @@
   document.querySelectorAll("[data-hscroll]").forEach((root) => {
     const track = root.querySelector(".brands-track");
     if (!track) return;
-    if (reduceMotion) { track.style.flexWrap = "wrap"; track.style.height = "auto"; return; }
+    // Mobile: CSS-Swipe-Slider (scroll-snap) übernimmt — kein Pin, kein Overflow
+    if (window.matchMedia("(max-width: 860px)").matches) return;
+    if (reduceMotion) { track.style.flexWrap = "wrap"; track.style.height = "auto"; track.style.width = "100%"; return; }
     const getAmount = () => -(track.scrollWidth - window.innerWidth);
     gsap.to(track, {
       x: getAmount, ease: "none",

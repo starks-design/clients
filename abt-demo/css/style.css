@@ -54,7 +54,7 @@
 
 /* ---------- Reset / Basis ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: initial; }
+html { scroll-behavior: initial; overflow-x: hidden; overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
@@ -435,8 +435,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ---------- Über uns ---------- */
 .brands { position: relative; }
+[data-hscroll] { overflow: clip; }
 .brands-track { display: flex; height: 100svh; width: max-content; }
 .brands-panel { position: relative; width: clamp(320px, 66vw, 900px); height: 100%; overflow: clip; flex-shrink: 0; }
+@media (max-width: 860px) {
+  /* Mobile: nativer Swipe-Slider statt GSAP-Pin — kein Layout-Overflow */
+  [data-hscroll] { overflow-x: auto; overflow-y: clip; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  [data-hscroll]::-webkit-scrollbar { display: none; }
+  .brands-track { height: 68svh; }
+  .brands-panel { width: 84vw; scroll-snap-align: center; }
+}
 .brands-panel img { width: 100%; height: 100%; object-fit: cover; }
 .brands-panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,5,5,0.75), transparent 50%); }
 .brands-panel h3 {
