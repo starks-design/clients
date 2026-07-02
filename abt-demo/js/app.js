@@ -340,6 +340,7 @@
       if (i === 0) return;
       tl.fromTo(v, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 1 }, i);
     });
+    tl.to({}, { duration: 1.6 }); // Caption blendet früh ein und steht dann
   });
 
   /* ---------- Story (PDP pinned Kapitel) ---------- */
