@@ -339,6 +339,12 @@
     const steps = [...root.querySelectorAll(".story-step")];
     const indexEl = root.querySelector(".story-index");
     if (!stage || !steps.length) return;
+    // Scroll-Indikator: ein Segment pro Kapitel
+    const barsWrap = root.querySelector(".story-progress-bars");
+    const chevron = root.querySelector(".story-progress-chevron");
+    const bars = barsWrap
+      ? steps.map(() => barsWrap.appendChild(document.createElement("i")))
+      : [];
     if (reduceMotion) {
       steps.forEach((s) => gsap.set(s, { position: "relative", opacity: 1, visibility: "visible", left: 0, bottom: 0 }));
       return;
@@ -354,6 +360,9 @@
             const i = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
             indexEl.textContent = String(i + 1).padStart(2, "0");
           }
+          const total = self.progress * steps.length;
+          bars.forEach((b, i) => b.style.setProperty("--p", Math.min(1, Math.max(0, total - i))));
+          if (chevron) chevron.style.opacity = self.progress > 0.96 ? "0" : "";
         },
       },
     });
