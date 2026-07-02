@@ -1,0 +1,869 @@
+/* ================================================================
+   STARKS.DESIGN — PRESENT (Interaktive Präsentation)
+   ================================================================
+   Lädt nach core.css. Deckt ab:
+   - Slide-Positioning (full-width innerhalb main-wrapper)
+   - Underlay-Menu (Osmo-Style, GSAP 3.15 + CustomEase)
+   - Bottom-Nav
+   - Fluid Typography (body --size-font mit min-Guard)
+   - Mobile A4-Portrait-Stack (max-width: 768px)
+   - Tabellen-Größen-Override (td default größer)
+   - Reduced-Motion Fallback
+   - Optional: @media print für Ad-hoc-PDF-Export
+
+   core.css bleibt statisch & universell — hier liegt ALLES, was
+   mit Präsentation/Animation/Layout des Renderers zu tun hat.
+   ================================================================ */
+
+
+/* ============================================================
+   0. FLUID TYPOGRAPHY — Present-Basis
+   core.css definiert --size-font via calc(). Bei schmalem
+   Viewport wird das zu klein (<992px → <8.27px). Hier min-Guard.
+   ============================================================ */
+body {
+  /* Untergrenze 15px, Obergrenze bleibt aus core-calc */
+  --size-font: max(15px, calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit))));
+  /* Underlay-Menü-Akzent = Cream Gold. Eigene Variable statt
+     --swatch--brand-secondary, weil core.css brand-secondary als Wine
+     (#5E2436) definiert. Cream Gold ist die Menü-Akzentfarbe des Skeletons
+     (Nummern, Trennlinie, Hover) — entkoppelt vom Wine der Slide-Akzente. */
+  --menu-accent: #C2A878;
+  font-size: var(--size-font);
+  /* Body leicht heller als Main — subtiler Rahmen wenn Main bei Menu-Open wegslidet */
+  background: color-mix(in srgb, var(--_theme---bg-00, #0d0b0b) 92%, var(--_theme---fg, #f1ebe5));
+  color: var(--_theme---text);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  position: relative;
+}
+
+
+/* ============================================================
+   1. SLIDE — Single-Slide Mechanismus
+   display:none default, .active → display:flex mit slideIn.
+   Slides sind immer volle Breite innerhalb der main-wrapper.
+   ============================================================ */
+.slide {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: var(--pad-top) var(--edge-pad) 6em;
+  font-size: var(--size-font);
+  background: var(--_theme---bg-00);
+  color: var(--_theme---text);
+  overflow: hidden;
+}
+.slide.active {
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s var(--ease-starks);
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(1.25em); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+.section-bg-num { display: none !important; }
+
+
+/* ============================================================
+   2. UNDERLAY NAVIGATION — Osmo-Style Menu
+   Main-Wrapper slidet nach links, Menu liegt darunter (z-index 1).
+   Toggle-Button fixed oben rechts (z-index 10).
+   ============================================================ */
+:root { --menu-width: 30em; }
+@media screen and (max-width: 767px) { :root { --menu-width: 80vw; } }
+
+.main-wrapper {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  background: var(--_theme---bg-00, #0d0b0b);
+  overflow: hidden;
+  will-change: transform, border-radius;
+  transition: box-shadow 0.4s ease;
+}
+body[data-menu-status="open"] .main-wrapper {
+  box-shadow: -2em 0 6em rgba(0, 0, 0, 0.5), -0.5em 0 2em rgba(0, 0, 0, 0.3);
+}
+
+.underlay-nav__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform;
+  background: transparent;
+}
+
+.underlay-nav__menu {
+  position: fixed;
+  top: 0; bottom: 0; right: 0;
+  width: var(--menu-width);
+  z-index: 1;
+  background: transparent;
+  color: var(--_theme---fg, #f1ebe5);
+  padding: 3em 3em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.underlay-nav__menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+
+.underlay-nav__menu a[data-reveal-l] {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  width: 100%;
+  padding: 0.5em 0.8em;
+  margin: 0 -0.8em;
+  border-radius: 0.35em;
+  font-size: 1.35em;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--_theme---fg, #f1ebe5) 55%, transparent);
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease;
+  will-change: opacity, transform;
+}
+.underlay-nav__menu a[data-reveal-l]:hover {
+  color: var(--_theme---fg, #f1ebe5);
+  background: color-mix(in srgb, var(--_theme---fg, #f1ebe5) 5%, transparent);
+}
+.underlay-nav__menu a[data-reveal-l].is-active {
+  color: var(--_theme---fg, #f1ebe5);
+}
+.underlay-nav__menu a[data-reveal-l].is-active .num {
+  color: var(--menu-accent, #C2A878);
+  opacity: 1;
+}
+.underlay-nav__menu a[data-reveal-l] .num {
+  font-family: var(--font-secondary, 'Azeret Mono', monospace);
+  font-size: 0.85em;
+  font-weight: 700;
+  opacity: 0.35;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  min-width: 2em;
+}
+
+.underlay-nav__menu-footer { margin-top: auto; }
+.underlay-nav__bottom-border {
+  height: 1px;
+  background: color-mix(in srgb, var(--menu-accent, #C2A878) 30%, transparent);
+  transform-origin: left center;
+  margin: 1.5em 0 1.2em;
+}
+
+.underlay-nav__menu-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em 2em;
+}
+.underlay-nav__menu-footer-col { display: flex; flex-direction: column; gap: 0.3em; }
+.underlay-nav__menu-footer-label {
+  font-family: var(--font-secondary, 'Azeret Mono', monospace);
+  font-size: 0.7em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--_theme---fg, #f1ebe5) 35%, transparent);
+  margin-bottom: 0.6em;
+}
+.underlay-nav__menu a[data-reveal-s] {
+  color: color-mix(in srgb, var(--_theme---fg, #f1ebe5) 55%, transparent);
+}
+.underlay-nav__menu a[data-reveal-s] {
+  display: block;
+  padding: 0.2em 0;
+  font-family: var(--font-primary, 'Inter', sans-serif);
+  font-size: 0.95em;
+  transition: color 0.25s ease;
+  will-change: opacity, transform;
+  text-decoration: none;
+}
+.underlay-nav__menu a[data-reveal-s]:hover {
+  opacity: 1;
+  color: var(--menu-accent, #C2A878);
+}
+
+.underlay-nav__toggle {
+  position: fixed;
+  top: 2em; right: 2.2em;
+  z-index: 10;
+  width: 2.8em; height: 2.8em;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  color: var(--_theme---fg, #f1ebe5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.underlay-nav__toggle:hover .underlay-nav__toggle-bar {
+  opacity: 0.6;
+}
+
+.underlay-nav__toggle-bars {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  pointer-events: none;
+}
+.underlay-nav__toggle-bar {
+  width: 1.15em;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+  will-change: transform;
+  transition: opacity 0.2s ease;
+}
+
+/* Logo Cover — animiertes VS-WebP, nur auf Cover-Slide oben links */
+.logo-cover-animated {
+  position: absolute;
+  top: 2em;
+  left: 3em;
+  z-index: 5;
+  height: 3.5em;
+  width: auto;
+  pointer-events: none;
+}
+
+/* Logo Menu — animiertes Triangle-WebP oben im Menu */
+.underlay-nav__menu-logo {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1em;
+  flex-shrink: 0;
+}
+.underlay-nav__menu-logo img {
+  height: 3em;
+  width: auto;
+}
+
+
+/* ============================================================
+   3. BOTTOM NAVIGATION
+   ============================================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 1.25em;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+.bottom-nav > .inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 0.75em;
+  background: color-mix(in srgb, var(--_theme---bg-00, #0d0b0b) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: none;
+  border-radius: 999px;
+  pointer-events: auto;
+}
+.nav-arrow {
+  width: 2.25em;
+  height: 2.25em;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--_theme---text, #f1ebe5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s ease;
+}
+.nav-arrow:hover { background: color-mix(in srgb, var(--_theme---fg, #f1ebe5) 8%, transparent); }
+.nav-counter {
+  font-family: var(--font-secondary, 'Azeret Mono', monospace);
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--_theme---fg, #f1ebe5) 50%, transparent);
+  padding: 0 0.75em;
+  min-width: 4em;
+  text-align: center;
+}
+
+
+/* ============================================================
+   4. DEVICE MOCKUPS — Apple-Device-Frames mit Screen-Content
+   Gleiche Architektur wie DeviceMockup Code Component:
+   Frame-WebP ueber Screen-Content, Cutout via CSS Custom Props.
+   Usage:
+     <div class="device-mockup" style="--dm-aspect:1.6577; --dm-top:2.4%; --dm-left:10.3%; --dm-w:79.5%; --dm-h:85.5%;">
+       <img class="device-mockup__frame" src="macbook-pro-14-silver.webp" alt="">
+       <div class="device-mockup__screen">
+         <img src="screenshot.jpg" alt="Website-Screenshot">
+       </div>
+     </div>
+   ============================================================ */
+.device-mockup {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: var(--dm-aspect, 1.6577);
+  filter: drop-shadow(0 1.5em 3em rgba(0,0,0,0.22)) drop-shadow(0 0.25em 0.75em rgba(0,0,0,0.15));
+}
+.device-mockup__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 4;
+}
+.device-mockup__screen {
+  position: absolute;
+  top: var(--dm-top, 2.4%);
+  left: var(--dm-left, 10.3%);
+  width: var(--dm-w, 79.5%);
+  height: var(--dm-h, 85.5%);
+  overflow: hidden;
+  background: #000;
+  z-index: 1;
+}
+.device-mockup__screen img,
+.device-mockup__screen video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.slide .device-mockup { max-width: 85%; margin: 0 auto; }
+
+
+/* ============================================================
+   4b. COVER-LAYOUT & SLIDE-HEADER-SPACING
+   ----------------------------------------------------------------
+   Headlines haben in core.css line-height:1.0 + Font-Trim
+   (::before/::after) — dadurch frisst die Cap-Height-Optimierung
+   die visuellen Abstaende. In Slide-Kontexten brauchen wir
+   wieder Luft: Headlines duerfen atmen, Eyebrows muessen
+   sichtbar getrennt sein, Accent-Line braucht Spielraum.
+   ============================================================ */
+.slide-toolbar { display: none !important; }
+/* Cover-Inhalt LINKSBÜNDIG, aber als Block vertikal in der Slide-Höhe zentriert
+   (nur Cover, nicht Content-Slides). justify-content:center am column-Flex
+   zentriert den Textblock mittig; align-items/text-align bleiben links. */
+.slide-cover .slide-content {
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+}
+/* grow-Spacer auf dem Cover deaktivieren — er würde gegen die vertikale
+   Zentrierung arbeiten (justify-content:center + grow heben sich auf). */
+.slide-cover .slide-content > .grow { display: none; }
+/* Meta-Zeile (Domain/Datum, letztes Kind) am unteren Rand verankern, damit sie
+   trotz Block-Zentrierung unten sitzt — Viktors Präferenz. */
+.slide-cover .slide-content > .flex:last-child {
+  position: absolute;
+  left: var(--edge-pad, var(--_spacing---space--8));
+  bottom: var(--pad-bottom, var(--_spacing---space--4));
+}
+
+/* Slide-Headlines: line-height entspannen — Cover-Display und
+   zweizeilige H1/H2 atmen sichtbar besser. */
+.slide-content .display,
+.slide-content .h1,
+.slide-content .h2 {
+  line-height: 1.1;
+}
+
+/* Eyebrow → Headline: sichtbarer Abstand statt 2px */
+.slide-content .eyebrow + .h1,
+.slide-content .eyebrow + h1,
+.slide-content .eyebrow + .h2,
+.slide-content .eyebrow + h2,
+.slide-content .eyebrow + .display {
+  margin-top: 0.6em;
+}
+
+/* Headline → Accent-Line: mt-2 (0.75em) ist zu eng durch Font-Trim.
+   Ueberschreibt das mt-2-Utility nur in diesem Kontext. */
+.slide-content .h1 + .accent-line,
+.slide-content .h2 + .accent-line,
+.slide-content .display + .accent-line {
+  margin-top: 1.1em;
+}
+
+/* Accent-Line → Folgetext (Intro-Absatz, h3, h4): Atem rein */
+.slide-content .accent-line + p,
+.slide-content .accent-line + .h3,
+.slide-content .accent-line + .h4,
+.slide-content .accent-line + h3,
+.slide-content .accent-line + h4 {
+  margin-top: 1.25em;
+}
+
+/* (Hamburger entfernt — Underlay-Toggle ersetzt ihn) */
+
+
+/* ============================================================
+   4c. TOC — Textstile (Nummer links | Titel | Seitenzahlen rechts)
+   Layout (.toc-list / .toc-item Flex-Verteilung) liegt in core.css —
+   hier nur Schriftgroessen und Brand-Akzent fuer Present.
+   ============================================================ */
+.toc-item .toc-num {
+  font-family: var(--font-primary);
+  font-size: var(--text-h3);
+  font-weight: 800;
+  color: var(--_theme---brand);
+  line-height: 1;
+  min-width: 2.5em;
+  letter-spacing: 0;
+}
+.toc-item .toc-title {
+  font-family: var(--font-primary);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  color: var(--_theme---text);
+  flex: 1;
+}
+.toc-item .toc-pages,
+.toc-page {
+  font-family: var(--font-secondary);
+  font-size: var(--text-main);
+  color: var(--_theme---text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   4d. SCORE-SLIDE — Donut linksbündig 1/3, Bars rechts 2/3
+   ============================================================ */
+.slide [class*="score"] ~ .donut-wrap,
+.donut-wrap { flex: 0 0 33%; max-width: 22em; }
+
+/* Score-Row: Label-Zeile ÜBER der Bar, klar getrennt.
+   Kompensiert das Font-Trim der .body/.large-Klasse (negatives ::after-margin
+   würde sonst die Bar in die Label-Zeile ziehen). */
+.score-row + .score-row { margin-top: 1.4em; }
+.score-row .score-label { margin-bottom: 0.55em; }
+.score-row .score-bar   { height: 0.55em; }
+
+
+/* 4e. FOOTER — liegt in core.css (foot-* Klassen). Kein Override hier noetig. */
+
+
+/* ============================================================
+   4f. CARDS — Hierarchie-Override fuer Present
+   PDF-Standard (mascha-rosskopf): Tag + h3-Titel + h4-Body.
+   Egal welches Element-Tag (h3, span, div, p) Sonnet verwendet —
+   die Typo-Klasse (.h5/.h4/.body) greift hier auf PDF-Niveau.
+   ============================================================ */
+.card,
+.card-filled-error,
+.card-filled-success,
+.card-filled-warning,
+.card-filled-brand,
+.card-left-accent {
+  padding: var(--space-4) var(--space-4);
+}
+
+/* Card-Titel (h3): Standard aus core.css (h3 = --text-h3). Hier nur weight + spacing fix. */
+.card h3, .card-filled-error h3, .card-filled-success h3,
+.card-filled-warning h3, .card-filled-brand h3, .card-left-accent h3 {
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+/* Card-Body (p.h4): weight 400 sicherstellen wenn inline style fehlt. */
+.card p.h4, .card-filled-error p.h4, .card-filled-success p.h4,
+.card-filled-warning p.h4, .card-filled-brand p.h4, .card-left-accent p.h4 {
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Body-Text in Cards: .body und unbeklassierte <p>-Childs auf h4-Groesse */
+.card p.body, .card p:not([class]),
+.card-filled-error p.body, .card-filled-error p:not([class]),
+.card-filled-success p.body, .card-filled-success p:not([class]),
+.card-filled-warning p.body, .card-filled-warning p:not([class]),
+.card-filled-brand p.body, .card-filled-brand p:not([class]),
+.card-left-accent p.body, .card-left-accent p:not([class]) {
+  font-size: var(--text-h4);
+  font-weight: 400;
+  line-height: 1.4;
+}
+/* Muted-Variante: Farbe dezenter, Groesse gleich */
+.card p.body.muted,
+.card-filled-error p.body.muted,
+.card-filled-success p.body.muted,
+.card-filled-warning p.body.muted,
+.card-filled-brand p.body.muted,
+.card-left-accent p.body.muted { color: var(--_theme---text-secondary); }
+
+/* Maßnahme-Card (card-left-accent): Tag-Farbe IMMER Brand.
+   Overrided tag-warning/success/error innerhalb dieser Card — Brand ist Pflicht. */
+.card-left-accent .tag {
+  background: color-mix(in srgb, var(--_theme---brand) 15%, transparent);
+  color: var(--_theme---brand);
+  border-color: var(--_theme---brand);
+}
+
+/* Gap zwischen Card-Kindern: mindestens --space-2, ueberschreibbar via gap-* Util */
+.card.flex, .card-filled-error.flex, .card-filled-success.flex,
+.card-filled-warning.flex, .card-filled-brand.flex, .card-left-accent.flex {
+  gap: var(--space-2);
+}
+
+/* Cards dehnen sich NICHT auf volle Container-Hoehe — auch in Grids mit grow. */
+.grid-2 .card, .grid-2 .card-filled-error, .grid-2 .card-filled-success,
+.grid-2 .card-filled-warning, .grid-2 .card-filled-brand, .grid-2 .card-left-accent,
+.grid-3 .card, .grid-3 .card-filled-error, .grid-3 .card-filled-success,
+.grid-3 .card-filled-warning, .grid-3 .card-filled-brand, .grid-3 .card-left-accent,
+.grid-4 .card, .grid-4 .card-filled-error, .grid-4 .card-filled-success,
+.grid-4 .card-filled-warning, .grid-4 .card-filled-brand, .grid-4 .card-left-accent {
+  align-self: start;
+  height: auto;
+}
+
+/* Font-Safety-Net: In Cards IMMER Inter, ausser explizit .tag / .mono / .logotype.
+   Verhindert dass inline-styles oder vergessene Klassen Mono reinkippen. */
+.card, .card *,
+.card-filled-error, .card-filled-error *,
+.card-filled-success, .card-filled-success *,
+.card-filled-warning, .card-filled-warning *,
+.card-filled-brand, .card-filled-brand *,
+.card-left-accent, .card-left-accent * {
+  font-family: var(--font-primary);
+}
+.card .tag, .card .mono, .card .logotype,
+.card-filled-error .tag, .card-filled-error .mono, .card-filled-error .logotype,
+.card-filled-success .tag, .card-filled-success .mono, .card-filled-success .logotype,
+.card-filled-warning .tag, .card-filled-warning .mono, .card-filled-warning .logotype,
+.card-filled-brand .tag, .card-filled-brand .mono, .card-filled-brand .logotype,
+.card-left-accent .tag, .card-left-accent .mono, .card-left-accent .logotype {
+  font-family: var(--font-secondary);
+}
+.card .logotype, .card-filled-error .logotype, .card-filled-success .logotype,
+.card-filled-warning .logotype, .card-filled-brand .logotype, .card-left-accent .logotype {
+  font-family: var(--font-primary);  /* logotype ist Inter italic, nicht mono */
+  font-style: italic;
+}
+
+
+/* ============================================================
+   5. TABELLEN — Present-Override
+   core.css lässt .tbl td bewusst ohne font-size (damit .h4/.h5
+   darauf greifen). Default ist dadurch im present zu klein.
+   Hier: td-Default auf --text-medium (1.25em). Klassen wie .h4
+   überschreiben weiterhin via höhere Spezifität (td.h4).
+   ============================================================ */
+/* Tabelle nimmt immer volle Breite des Containers (Slide / Card / Grid-Zelle). */
+.tbl { width: 100%; table-layout: auto; }
+.tbl td { font-size: var(--text-large); padding: var(--space-3) var(--space-2); vertical-align: middle; }
+.tbl th { font-size: var(--text-main); padding: var(--space-2) var(--space-2); }
+.tbl td:not([class]) { color: var(--_theme---text); }
+/* Erste Spalte ohne Left-Padding (buendig mit Slide-Kante) */
+.tbl th:first-child,
+.tbl td:first-child { padding-left: 0; }
+.tbl th:last-child,
+.tbl td:last-child  { padding-right: 0; text-align: right; }
+/* Striche zwischen allen Zeilen (letzte ohne) */
+.tbl td,
+.tbl th { border-bottom: 1px solid var(--_theme---border); }
+.tbl tr:last-child td { border-bottom: none; }
+
+
+/* ============================================================
+   6. MOBILE — Portrait-Stack mit body-scroll
+   ============================================================ */
+@media (max-width: 768px) {
+  :root {
+    --size-font: clamp(14px, 3.4vw, 17px);
+    --edge-pad:   1.25em;
+    --pad-top:    3em;
+    --pad-bottom: 4em;
+  }
+
+  body {
+    overflow: auto !important;
+    height: auto !important;
+    position: static;
+  }
+
+  .slide,
+  .slide.slide-cover,
+  .slide.slide-closing,
+  .slide[data-slide="0"] {
+    position: relative !important;
+    top: auto !important;
+    left: 0 !important;
+    right: auto !important;
+    width: 100vw !important;
+    max-width: 100vw;
+    height: auto !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible !important;
+    padding: var(--pad-top) var(--edge-pad) var(--pad-bottom) !important;
+    transition: none !important;
+  }
+  .slide.active { animation: none !important; }
+
+  .slide-content {
+    max-width: 100% !important;
+    width: 100%;
+    height: auto !important;
+    min-height: auto;
+  }
+
+  .slide.slide-cover .slide-content,
+  .slide.slide-closing .slide-content,
+  .slide[data-slide="0"] .slide-content {
+    justify-content: center;
+    min-height: calc(100vh - var(--pad-top) - var(--pad-bottom));
+    min-height: calc(100dvh - var(--pad-top) - var(--pad-bottom));
+  }
+  .cover-glow { display: none; }
+  .grow { min-height: 1.5em; flex: 0 0 auto; }
+
+  .bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0.5em;
+    left: 0 !important;
+    width: 100vw !important;
+    z-index: 200;
+  }
+
+  .underlay-nav__toggle {
+    top: 0.75em;
+    right: 0.75em;
+    width: 2.75em;
+    height: 2.75em;
+  }
+
+  .grid-2, .grid-3, .grid-4,
+  [class*="grid-2"], [class*="grid-3"], [class*="grid-4"],
+  .grid-cols-2, .grid-cols-3, .grid-cols-4,
+  .compare-wrap { grid-template-columns: 1fr !important; gap: var(--space-4) !important; }
+
+  .flex.gap-48,
+  .flex.center.gap-24 {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5em;
+  }
+
+  .toc-list { flex: none !important; min-height: auto; }
+  .toc-item {
+    flex: none !important;
+    min-height: auto;
+    padding: var(--space-3) 0 !important;
+  }
+  .toc-item .toc-num { font-size: 1.5em; min-width: 2em; }
+  .toc-item .toc-title { font-size: 1em; }
+
+  .section-bg-num {
+    font-size: 5em !important;
+    opacity: 0.15;
+    right: 0.5em !important;
+    top: 0.5em !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+  }
+
+  .display, .h1, .h2, .h3, .slide-title {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+  .display { font-size: clamp(1.75em, 8vw, 3em) !important; line-height: 1.05; }
+  .h1      { font-size: clamp(1.5em, 6.5vw, 2.5em) !important; }
+  .h2      { font-size: clamp(1.3em, 5vw, 2em) !important; }
+  .h3      { font-size: clamp(1.15em, 4vw, 1.6em) !important; }
+
+  .logo-vs,
+  .slide-cover .logo-vs,
+  .logo-top-right {
+    position: fixed !important;
+    top: 0.75em !important;
+    right: 0.75em !important;
+    width: 3em !important;
+    z-index: 250;
+  }
+
+  .card, .impact-card,
+  .card-filled-error, .card-filled-success, .card-filled-warning,
+  .card-filled-brand, .card-left-accent { padding: 1.25em; }
+
+  /* Closing-Slide auf Mobile: Portrait komplett ausblenden, Content volle Breite. */
+  .slide-closing .slide-content,
+  .slide.slide-closing .slide-content { max-width: 100% !important; }
+  .slide-closing img[alt*="Viktor"],
+  .slide-closing img[src*="viktor-stark"] { display: none !important; }
+  .slide-closing .btn { width: 100%; }
+  /* Subtext (body muted) groesser auf Mobile */
+  .slide-closing .body.muted { font-size: var(--text-medium); line-height: 1.5; }
+  /* Logotype + Name kompakter aber sichtbar */
+  .slide-closing .logotype { font-size: var(--text-h4) !important; }
+
+  /* Footer-Texte auf Mobile groesser als Desktop-Default */
+  .foot-page, .foot-company, .foot-project,
+  .foot-left, .foot-right,
+  .foot-logo-type { font-size: var(--text-main) !important; }
+
+  /* Tabellen auf Mobile: bleiben als <table> (volle Breite),
+     nur bei extrem vielen Spalten fallback auf x-scroll. */
+  .tbl { width: 100%; table-layout: fixed; word-break: break-word; }
+  .tbl th, .tbl td { font-size: 0.875em; padding: 0.625em 0.5em; }
+  .tbl td:last-child, .tbl th:last-child { padding-right: 0; }
+  .tbl td:first-child, .tbl th:first-child { padding-left: 0; }
+  /* Tabellen mit 5+ Spalten koennen trotzdem scrollen */
+  .tbl.scroll-x {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    table-layout: auto;
+  }
+
+  /* Footer auf Mobile: etwas mehr Gap, aber nicht zu klein (siehe Override oben) */
+  .foot { gap: var(--space-2); }
+  .slide-foot { font-size: var(--text-small); gap: 0.5em; }
+  .slide-foot svg { width: 1.2em !important; height: 1.2em !important; }
+}
+
+
+/* ============================================================
+   7. GSAP INIT-STATES — Elemente unsichtbar bis GSAP sie zeigt
+   Verhindert FOUC beim Slide-Eintritt.
+   Nur aktiv wenn body.gsap-ready Klasse vom JS gesetzt wird —
+   so bleibt das HTML ohne JS immer sichtbar (Fallback).
+   ============================================================ */
+body.gsap-ready .slide:not(.active) [data-anim] { opacity: 0; }
+body.gsap-ready .slide.active [data-anim="counter"] { opacity: 1; }
+
+/* Reduced-Motion: alle GSAP-States neutralisieren */
+@media (prefers-reduced-motion: reduce) {
+  .slide.active { animation: none !important; }
+  body.gsap-ready [data-anim] { opacity: 1 !important; transform: none !important; }
+  .donut-ring { transition: none !important; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+
+/* ============================================================
+   7b. ENTRY-ANIMATION — wird via GSAP im JS getriggert (siehe Template).
+   CSS steuert nur die Initial-States damit kein FOUC entsteht,
+   bevor GSAP.from() laeuft. body.gsap-ready wird im JS gesetzt.
+   ============================================================ */
+body.gsap-ready .slide.active .slide-content > *,
+body.gsap-ready .slide.active .grid-2 > *,
+body.gsap-ready .slide.active .grid-3 > *,
+body.gsap-ready .slide.active .grid-4 > *,
+body.gsap-ready .slide.active .toc-item,
+body.gsap-ready .slide.active .tbl tbody tr {
+  will-change: opacity, transform;
+}
+
+
+/* ============================================================
+   8. LEGACY-KLASSEN — werden schrittweise durch GSAP ersetzt,
+   bleiben aber als Fallback bestehen (falls GSAP scheitert).
+   ============================================================ */
+.d1 { animation-delay: 0.1s !important; }
+.d2 { animation-delay: 0.2s !important; }
+.d3 { animation-delay: 0.3s !important; }
+.d4 { animation-delay: 0.4s !important; }
+.d5 { animation-delay: 0.5s !important; }
+.d6 { animation-delay: 0.6s !important; }
+.d7 { animation-delay: 0.7s !important; }
+.d8 { animation-delay: 0.8s !important; }
+
+.motion-line {
+  stroke-dasharray: 99999;
+  stroke-dashoffset: 99999;
+  animation: drawLine 2s var(--ease-starks) forwards;
+}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+.motion-dot {
+  opacity: 0;
+  animation: fadeUp 0.5s var(--ease-starks) forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(0.5em); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bar-v, .bar-up {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: growBarV 1s var(--ease-starks) forwards;
+}
+@keyframes growBarV { to { transform: scaleY(1); } }
+
+.donut-ring {
+  stroke-linecap: round;
+  transition: stroke-dasharray 1.5s var(--ease-starks);
+}
+
+
+/* ============================================================
+   9. PRINT — Ad-hoc PDF-Export aus dem Browser
+   Für sauberen PDF-Export empfohlen wird der starks-pdf Skill.
+   Dieser Block hier ist Notfall-Fallback.
+   ============================================================ */
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
+@media print {
+  :root { --size-font: 16px; }
+  .underlay-nav__toggle, .underlay-nav__menu, .underlay-nav__overlay, .bottom-nav { display: none !important; }
+  body { overflow: visible; height: auto; margin: 0; padding: 0; }
+  .slide {
+    display: flex !important;
+    flex-direction: column;
+    position: relative !important;
+    left: 0 !important;
+    width: 1920px !important;
+    height: 1080px !important;
+    padding: var(--pad-top) var(--edge-pad) 6em !important;
+    page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    transition: none;
+    animation: none !important;
+  }
+  * { animation: none !important; transition: none !important; }
+}

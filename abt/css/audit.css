@@ -1,0 +1,842 @@
+/* ============================================================
+   starks-design-audit / audit.css
+   Audit-spezifische Komponenten-CSS — erweitert core.css
+   ------------------------------------------------------------
+   Enthaelt: SERP-Mockups, Local-Pack, AI-Overview, Benchmark-Bars,
+   Compare-Wrap, Impact-Cards, Slide-Animationen, Closing-Reveals,
+   Legacy gap-Aliase und andere audit-spezifische Patterns.
+   ------------------------------------------------------------
+   Quelle: extrahiert aus Ostendorf-90 Block 1 (11.04.2026)
+   ============================================================ */
+
+/* ============================================================
+   STARKS DESIGN-SYSTEM v2 — Single Source of Truth
+   Quelle: starks_temp_umbau/starks-design-system/SKILL.md
+   ============================================================ *//* --- INTER FONTS (Base64 aus Ostendorf Original) --- */*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }/* --- THEMES --- *//* --- RESETS --- */*, *::before, *::after { box-sizing: border-box; }/* Erben auf alle Text-Elemente (inherit erzwingen) */h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, textarea, li {
+  font-feature-settings: inherit;
+}body::-webkit-scrollbar { display: none; }svg { max-width: 100%; }h1, h2, h3, h4, h5, h6, p { margin: 0; font-weight: inherit; }::selection {
+  background: var(--_theme---brand);
+  color: #ffffff;
+  text-shadow: none;
+}/* ============================================================
+   TEXT-STYLE-KLASSEN (direkt + u-text-style-* Alias)
+   ============================================================ */.display, .u-text-style-display {
+  font-family: var(--font-primary);
+  font-size: var(--text-display);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}.h1, .u-text-style-h1 {
+  font-family: var(--font-primary);
+  font-size: var(--text-h1);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}.h2, .u-text-style-h2 {
+  font-family: var(--font-primary);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}.h3, .u-text-style-h3 {
+  font-family: var(--font-primary);
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}.h4, .u-text-style-h4 {
+  font-family: var(--font-primary);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}.h5, .u-text-style-h5 {
+  font-family: var(--font-primary);
+  font-size: var(--text-h5);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
+}.h6, .u-text-style-h6 {
+  font-family: var(--font-primary);
+  font-size: var(--text-h6);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-optical-sizing: auto;
+}.large, .u-text-style-large {
+  font-family: var(--font-primary);
+  font-size: var(--text-large);
+  font-weight: 400;
+  line-height: 1.5;
+  text-wrap: pretty;
+}.medium, .u-text-style-medium {
+  font-family: var(--font-primary);
+  font-size: var(--text-medium);
+  font-weight: 400;
+  line-height: 1.5;
+  text-wrap: pretty;
+}.body-sm, .small, .u-text-style-small {
+  font-family: var(--font-primary);
+  font-size: var(--text-small);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}.tiny {
+  font-family: var(--font-primary);
+  font-size: var(--text-tiny);
+  font-weight: 500;
+  line-height: 1.4;
+}.max {
+  font-family: var(--font-primary);
+  font-size: var(--text-max);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.05em;
+}/* --- EYEBROW & CAPTION (nach test-16x9 Pattern) ---
+   eyebrow = text-small (0.75em), text-secondary (grau)
+   caption = text-tiny (0.65em), KEINE Farbe
+   .accent = globale Modifier-Klasse für Brand-Farbe
+*/.eyebrow {
+  font-family: var(--font-secondary);
+  font-size: var(--text-small);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--_theme---text-secondary);
+  display: inline-block;
+  margin-bottom: 0.5em;
+}.caption {
+  font-family: var(--font-secondary);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-block;
+}/* --- Farb-Utilities --- */.muted    { color: var(--_theme---text-secondary); }.faded    { color: var(--_theme---text-faded); }.bold     { font-weight: 700; }.semi     { font-weight: 600; }.brand    { color: var(--_theme---brand); }.accent   { color: var(--_theme---brand); }.success  { color: var(--swatch--success); }.warning  { color: var(--swatch--warning); }.error    { color: var(--swatch--error); }/* Severity-Pills = Tag-Klassen (Azeret Mono, text-tiny, 15% bg-mix, border) */.severity-critical, .severity-high, .severity-medium, .severity-low, .severity-positiv {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-round);
+  padding: 0.25em 0.75em;
+  font-family: var(--font-secondary);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  width: fit-content;
+  align-self: flex-start;
+  border: 1px solid;
+}/* Kritisch + Hoch → beide rot */.severity-critical, .severity-high {
+  background: color-mix(in srgb, var(--swatch--error) 15%, transparent);
+  color: var(--swatch--error);
+  border-color: var(--swatch--error);
+}/* Mittel → orange (brand-secondary), NICHT Brand-Lila */.severity-medium {
+  background: color-mix(in srgb, var(--swatch--brand-secondary) 15%, transparent);
+  color: var(--swatch--brand-secondary);
+  border-color: var(--swatch--brand-secondary);
+}/* Niedrig + Positiv → grün */.severity-low, .severity-positiv {
+  background: color-mix(in srgb, var(--swatch--success) 15%, transparent);
+  color: var(--swatch--success);
+  border-color: var(--swatch--success);
+}/* ============================================================
+   EYEBROW
+   ============================================================ *//* .eyebrow bereits oben als Alias-Kombination definiert *//* ============================================================
+   ACCENT-LINE
+   ============================================================ */.accent-line {
+  width: 3em;
+  height: 3px;
+  background: var(--_theme---text-secondary);
+  border: none;
+}.accent-line-full {
+  width: 100%;
+  height: 1px;
+  background: var(--_theme---border);
+  border: none;
+}/* ============================================================
+   LAYOUT-UTILITIES
+   ============================================================ */.flex    { display: flex; }.col     { flex-direction: column; }.wrap    { flex-wrap: wrap; }.grow    { flex: 1; }.center  { align-items: center; }.middle  { justify-content: center; }.between { justify-content: space-between; }.end     { justify-content: flex-end; }.self-center { align-self: center; }.self-end    { align-self: flex-end; }.relative { position: relative; }.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--grid-gap); }.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--grid-gap); }.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: var(--grid-gap); }/* --- SPACING (em) — überschreibt Ostendorf px-basierte Varianten --- */.gap-1  { gap: var(--space-1); }.gap-2  { gap: var(--space-2); }.gap-3  { gap: var(--space-3); }.gap-4  { gap: var(--space-4); }.gap-5  { gap: var(--space-5); }.gap-6  { gap: var(--space-6); }.gap-7  { gap: var(--space-7); }.gap-8  { gap: var(--space-8); }/* Legacy px-Namen → auf em-Basis gemappt (Ostendorf-Slides nutzen sie noch) */.gap-4-legacy  { gap: 0.25em; }.gap-8-legacy  { gap: 0.5em; }.gap-12  { gap: 0.75em; }.gap-16  { gap: 1em; }.gap-24  { gap: 1.5em; }.gap-32  { gap: 2em; }.gap-48  { gap: 3em; }.mt-1  { margin-top: var(--space-1); }.mt-2  { margin-top: var(--space-2); }.mt-3  { margin-top: var(--space-3); }.mt-4  { margin-top: var(--space-4); }.mt-5  { margin-top: var(--space-5); }.mt-6  { margin-top: var(--space-6); }.mt-7  { margin-top: var(--space-7); }.mt-8  { margin-top: var(--space-8); }/* Legacy px-Namen auf em */.mt-12 { margin-top: 0.75em; }.mt-16 { margin-top: 1em; }.mt-24 { margin-top: 1.5em; }.mt-32 { margin-top: 2em; }.mt-48 { margin-top: 3em; }.mt-64 { margin-top: 4em; }.mb-1  { margin-bottom: var(--space-1); }.mb-2  { margin-bottom: var(--space-2); }.mb-3  { margin-bottom: var(--space-3); }.mb-4  { margin-bottom: var(--space-4); }.mb-5  { margin-bottom: var(--space-5); }.mb-16 { margin-bottom: 1em; }.mb-24 { margin-bottom: 1.5em; }.mb-32 { margin-bottom: 2em; }/* ============================================================
+   CARDS
+   ============================================================ *//* .card = test-16x9 Standard (= card-filled): bg-03 grau, keine Border */.card {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-03);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}/* .card-flat = identisch zu .card (bg-03, no border) */.card-flat {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-03);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}/* .card-accent = MASSNAHME-Pattern: Volle Brand-Border (lila), transparenter bg */.card-accent {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: transparent;
+  border: 1.5px solid var(--_theme---brand);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}/* Severity-Tints via :has() — greift auf plain .card (nach HTML-transform)
+   Farb-Logik:
+     critical + high = rot (error)
+     medium          = orange (brand-secondary, NICHT brand-lila)
+     low + positiv   = grün (success)
+   Brand-Lila bleibt ausschliesslich für Maßnahme/Akzent reserviert. */.card:has(.severity-critical),
+.card:has(.severity-high) {
+  background: color-mix(in srgb, var(--swatch--error) 8%, var(--_theme---bg-00));
+}.card:has(.severity-medium) {
+  background: color-mix(in srgb, var(--swatch--brand-secondary) 8%, var(--_theme---bg-00));
+}/* Positiv/Low → grüner muted bg (wie card-filled-success).
+   KEIN left-border — einziger erlaubter Border ist .card-left-accent (lila, Maßnahme). */.card:has(.severity-low),
+.card:has(.severity-positiv) {
+  background: color-mix(in srgb, var(--swatch--success) 8%, var(--_theme---bg-00));
+}/* Typo-Hierarchie IN Cards: Ostendorf-HTML nutzt .h4/.body-sm → auf test-16x9
+   bumpen (h4 → 2em wie h3, body-sm → 1.5em wie h4) */.card .h4 {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}.card .body-sm {
+  font-size: var(--text-h4);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--_theme---text-secondary);
+}/* Margin-Klassen innerhalb Cards entfernen (gap übernimmt das) */.card .mt-8, .card .mt-12, .card .mt-16 { margin-top: 0; }.card-filled {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-03);
+  border: none;
+}.card-filled-success {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--swatch--success) 6%, var(--_theme---bg-00));
+  border: none;
+}.card-filled-warning {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--swatch--warning) 6%, var(--_theme---bg-00));
+  border: none;
+}.card-filled-error {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--swatch--error) 6%, var(--_theme---bg-00));
+  border: none;
+}.card-filled-brand {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--_theme---brand) 6%, var(--_theme---bg-00));
+  border: none;
+}.card-left-accent {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-00);
+  border: 1px solid var(--_theme---border);
+  border-left: 4px solid var(--_theme---brand);
+}.card-left-success {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-00);
+  border: 1px solid var(--_theme---border);
+  border-left: 4px solid var(--swatch--success);
+}.card-left-warning {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-00);
+  border: 1px solid var(--_theme---border);
+  border-left: 4px solid var(--swatch--warning);
+}.card-left-error {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-00);
+  border: 1px solid var(--_theme---border);
+  border-left: 4px solid var(--swatch--error);
+}.card-highlight {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-00);
+  border: 2px solid var(--_theme---brand);
+}/* Impact-Card — Ostendorf-Mockup Card, auf em gemappt */.impact-card {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-03);
+  border: 1px solid var(--_theme---border);
+}/* ============================================================
+   TAGS
+   ============================================================ */.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-round);
+  padding: 0.25em 0.75em;
+  font-family: var(--font-secondary);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  width: fit-content;
+  align-self: flex-start;
+  background: var(--_theme---bg-03);
+  color: var(--_theme---text-secondary);
+  border: 1px solid var(--_theme---border);
+}.tag-success { background: color-mix(in srgb, var(--swatch--success) 15%, transparent); color: var(--swatch--success); border-color: var(--swatch--success); }.tag-warning { background: color-mix(in srgb, var(--swatch--warning) 15%, transparent); color: var(--swatch--warning); border-color: var(--swatch--warning); }.tag-error   { background: color-mix(in srgb, var(--swatch--error)   15%, transparent); color: var(--swatch--error);   border-color: var(--swatch--error); }.tag-brand   { background: color-mix(in srgb, var(--swatch--brand)   15%, transparent); color: var(--swatch--brand);   border-color: var(--swatch--brand); }.tag-neutral { background: color-mix(in srgb, var(--_theme---text-secondary) 10%, transparent); color: var(--_theme---text-secondary); border-color: var(--_theme---text-secondary); }/* ============================================================
+   SCORE-BARS
+   ============================================================ */.score-bar {
+  width: 100%;
+  height: 0.5em;
+  background: var(--_theme---bg-10);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}.score-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-small);
+  transition: width 1s var(--ease-starks);
+}.score-bar-fill.success { background: var(--swatch--success); }.score-bar-fill.warning { background: var(--swatch--warning); }.score-bar-fill.error   { background: var(--swatch--error); }.score-bar-fill.brand   { background: var(--_theme---brand); }/* ============================================================
+   DONUT
+   ============================================================ */.donut-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}.donut-wrap svg { width: 100%; height: 100%; }.donut-wrap circle { fill: none; }.donut-ring { stroke-linecap: round; }.donut-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+}/* Score-Layout: Donut links (4 Columns) + Bars rechts (8 Columns) */.score-layout {
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  gap: var(--space-8);
+  align-items: center;
+  width: 100%;
+}.score-layout > .donut-wrap {
+  justify-self: center;
+}/* ============================================================
+   TABELLE
+   ============================================================ */.tbl { width: 100%; border-collapse: collapse; }.tbl th {
+  text-align: left;
+  font-family: var(--font-secondary);
+  font-size: var(--text-small);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--_theme---text-secondary);
+  padding: var(--space-2) var(--space-2);
+  border-bottom: 2px solid var(--_theme---border);
+}.tbl td {
+  padding: var(--space-2) var(--space-2);
+  border-bottom: 1px solid var(--_theme---border);
+  vertical-align: middle;
+}.tbl th:first-child, .tbl td:first-child { padding-left: 0; }.tbl tr:last-child td { border-bottom: none; }/* ============================================================
+   CHECK-LIST / DIVIDER
+   ============================================================ */.check-list { list-style: none; padding: 0; margin: 0; }.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--_theme---border);
+  font-size: var(--text-main);
+}.divider {
+  height: 1px;
+  background: var(--_theme---border);
+  opacity: 0.5;
+  border: none;
+}/* ============================================================
+   BUTTONS
+   ============================================================ */.btn, .btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.75em 1.5em;
+  border-radius: var(--radius-round);
+  font-family: var(--font-primary);
+  font-size: var(--text-main);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-starks);
+  border: none;
+}.btn-primary {
+  background: var(--_theme---text);
+  color: var(--_theme---bg-00);
+}.btn-brand, .btn-accent {
+  background: var(--_theme---brand);
+  color: #ffffff;
+}.btn-outline {
+  background: transparent;
+  border: 1px solid var(--_theme---text);
+  color: var(--_theme---text);
+}.btn-webflow {
+  background: var(--swatch--webflow);
+  color: #ffffff;
+}/* ============================================================
+   LOGOTYPE (italic Starks.Design Wortmarke)
+   ============================================================ */.logotype {
+  font-family: var(--font-primary);
+  font-style: italic;
+  font-size: var(--text-small);
+  letter-spacing: -0.03em;
+  color: var(--_theme---text);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+}.logotype strong { font-weight: 900; }.logotype span   { font-weight: 400; letter-spacing: -0.06em; }/* --- COVER: Viktor Stark Logo oben rechts --- */.slide-cover .logo-vs, .logo-top-right {
+  position: absolute;
+  top: 4.5em;
+  right: var(--space-8);
+  width: 8em;
+  color: var(--_theme---text);
+  z-index: 2;
+}/* ============================================================
+   FOOTER (globale Komponente)
+   ============================================================ */.foot-wrap {
+  margin-top: auto;
+  width: 100%;
+}.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--_theme---border);
+  padding-top: 0.5em;
+  font-family: var(--font-primary);
+  font-size: var(--text-small);
+  color: var(--_theme---text-secondary);
+}.foot-left  { display: flex; align-items: center; gap: 1em; }.foot-right { display: flex; align-items: center; gap: 0.75em; }.foot-page  { font-family: var(--font-secondary); }.foot-company { font-weight: 600; color: var(--_theme---text); }.foot-project { color: var(--_theme---text-faded); }.foot-logo-type {
+  /* 6 × size-font → 96px bei 16 base, unabhängig von parent em */
+  width: calc(var(--size-font) * 6);
+  height: auto;
+  color: var(--_theme---text);
+  flex-shrink: 0;
+}.foot-logo-tri {
+  width: calc(var(--size-font) * 1.2);
+  height: auto;
+  color: var(--_theme---text);
+  flex-shrink: 0;
+}/* Ostendorf Legacy Footer (slide-foot) — flex-item mit margin-top:auto */.slide-foot {
+  margin-top: auto;
+  flex-shrink: 0;
+  padding-top: 1em;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  font-family: var(--font-primary);
+  font-size: var(--text-small);
+  color: var(--_theme---text-secondary);
+  opacity: 0.6;
+}.slide-foot .pg { font-family: var(--font-secondary); }.slide-foot .cl { font-weight: 600; color: var(--_theme---text); }.slide-foot .foot-spacer { flex: 1; height: 1px; background: var(--_theme---border); }/* Generic svg size — aber NICHT für .foot-logo-type/.foot-logo-tri (die haben eigene Klassen) */.slide-foot svg:not(.foot-logo-type):not(.foot-logo-tri) { width: 1.5em; height: 1.5em; color: var(--_theme---text); }/* TOC: entfernt — Styles kommen aus core.css (.toc-item, .toc-page).
+   Present-spezifische TOC-Navigation ist im starks-present Template. *//* ============================================================
+   SECTION-OPENER (Background-Number)
+   ============================================================ */.section-bg-num {
+  font-family: var(--font-primary);
+  font-size: 8em;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--swatch--error);
+  opacity: 0.25;
+  margin-top: var(--space-5);
+  white-space: nowrap;
+  pointer-events: none;
+}.section-bg-num .sub {
+  font-size: 0.5em;
+  opacity: 0.8;
+  font-weight: 700;
+}/* Chapter-Opener: Severity-Gruppen am unteren Rand */.chapter-findings {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}.chapter-finding-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}.chapter-finding-label {
+  font-weight: 700;
+  font-size: var(--text-h5);
+  min-width: 6em;
+}.chapter-finding-label.critical { color: var(--swatch--error); }.chapter-finding-label.high     { color: var(--swatch--error); }.chapter-finding-label.medium   { color: var(--swatch--brand-secondary); }.chapter-finding-label.low      { color: var(--swatch--success); }.chapter-finding-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-round);
+  padding: 0.25em 0.75em;
+  font-family: var(--font-secondary);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  border: 1px solid;
+}.chapter-finding-chip.critical, .chapter-finding-chip.high {
+  background: color-mix(in srgb, var(--swatch--error) 12%, transparent);
+  color: var(--swatch--error);
+  border-color: var(--swatch--error);
+}.chapter-finding-chip.medium {
+  background: color-mix(in srgb, var(--swatch--brand-secondary) 12%, transparent);
+  color: var(--swatch--brand-secondary);
+  border-color: var(--swatch--brand-secondary);
+}.chapter-finding-chip.low {
+  background: color-mix(in srgb, var(--swatch--success) 12%, transparent);
+  color: var(--swatch--success);
+  border-color: var(--swatch--success);
+}.section-num {
+  font-family: var(--font-secondary);
+  font-size: var(--text-small);
+  font-weight: 700;
+  color: var(--_theme---brand);
+  letter-spacing: 0.1em;
+}/* ============================================================
+   BLOCK 2 — SERP/Local/AI/Benchmark Mockups (aus Ostendorf)
+   ============================================================ */
+
+/* Mockup-Grafiken CSS */
+.serp-mockup {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 700px;
+  font-family: Arial, sans-serif;
+  color: #202124;
+}
+.serp-searchbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border: 1px solid #dfe1e5;
+  border-radius: 24px;
+  margin-bottom: 24px;
+}
+.serp-searchbar .g-icon {
+  width: 20px; height: 20px;
+  background: conic-gradient(#4285f4 0deg 90deg, #ea4335 90deg 180deg, #fbbc05 180deg 270deg, #34a853 270deg 360deg);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.serp-searchbar input {
+  border: none; outline: none; font-size: 14px; flex: 1;
+  font-family: Arial, sans-serif; color: #202124;
+}
+.serp-result {
+  padding: 16px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+.serp-result:last-child { border-bottom: none; }
+.serp-url {
+  font-size: 12px;
+  color: #202124;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.serp-url .favicon {
+  width: 16px; height: 16px;
+  background: #ddd;
+  border-radius: 50%;
+}
+.serp-url .breadcrumb { color: #5f6368; }
+.serp-title {
+  font-size: 18px;
+  color: #1a0dab;
+  margin: 4px 0;
+  cursor: pointer;
+}
+.serp-title:hover { text-decoration: underline; }
+.serp-desc {
+  font-size: 13px;
+  color: #4d5156;
+  line-height: 1.5;
+}
+.serp-highlight { font-weight: 700; }
+.serp-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.serp-badge.before { background: #fce8e6; color: #d93025; }
+.serp-badge.after { background: #e6f4ea; color: #1e8e3e; }
+.serp-rich {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font-size: 13px;
+  color: #70757a;
+}
+.serp-stars { color: #fbbc05; font-size: 14px; letter-spacing: 1px; }
+.compare-wrap {
+  display: grid;
+  grid-template-columns: 1fr 48px 1fr;
+  gap: 0;
+  align-items: start;
+}
+.compare-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+  font-size: 28px;
+  color: var(--accent);
+}
+.local-pack {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  font-family: Arial, sans-serif;
+  color: #202124;
+}
+.local-pack-header {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.local-pack-header .maps-icon { color: #34a853; font-size: 20px; }
+.local-entry {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+.local-entry:last-child { border-bottom: none; }
+.local-rank {
+  font-size: 14px;
+  font-weight: 700;
+  color: #5f6368;
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.local-info { flex: 1; }
+.local-name { font-size: 14px; font-weight: 500; color: #1a0dab; }
+.local-meta { font-size: 12px; color: #70757a; margin-top: 2px; }
+.local-highlight {
+  background: rgba(232,99,43,0.08);
+  border-left: 3px solid var(--accent);
+  padding-left: 9px;
+  margin-left: -12px;
+  border-radius: 0 8px 8px 0;
+}
+.benchmark {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+.bench-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.bench-label {
+  width: 140px;
+  text-align: right;
+  font-size: 13px;
+  color: var(--fg2);
+  flex-shrink: 0;
+}
+.bench-label.you { color: var(--accent); font-weight: 700; }
+.bench-track {
+  flex: 1;
+  height: 24px;
+  background: var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.bench-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+.ai-mockup {
+  background: #343541;
+  border-radius: 12px;
+  padding: 24px 28px;
+  max-width: 700px;
+  font-family: 'Inter', sans-serif;
+}
+.ai-question {
+  background: #444654;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #ececf1;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+}
+.ai-avatar {
+  width: 28px; height: 28px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.ai-avatar.user { background: #5436da; color: #fff; }
+.ai-avatar.bot { background: #19c37d; color: #fff; }
+.ai-answer {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #d1d5db;
+  line-height: 1.6;
+  display: flex;
+  gap: 12px;
+}
+.ai-answer strong { color: #ececf1; }
+.ai-missing {
+  background: rgba(248,113,113,0.1);
+  border: 1px dashed rgba(248,113,113,0.3);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--error);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ai-missing .icon { font-size: 18px; flex-shrink: 0; }
+/* ChatGPT 2026 Mockup: dark UI, user pill, thinking row, source chips */
+.cgpt-mockup {
+  background: #212121;
+  border-radius: 0.7em;
+  padding: 1.3em 1.5em;
+  font-family: 'Inter', sans-serif;
+  color: #ececec;
+}
+.cgpt-q { display: flex; justify-content: flex-end; margin-bottom: 1em; }
+.cgpt-q span {
+  background: #303030;
+  color: #ececec;
+  padding: 0.55em 1em;
+  border-radius: 1.2em;
+  font-size: 0.82em;
+  max-width: 82%;
+}
+.cgpt-thinking {
+  color: #8e8e9e;
+  font-size: 0.74em;
+  margin-bottom: 0.65em;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.cgpt-a { font-size: 0.82em; color: #d4d4d4; line-height: 1.65; }
+.cgpt-a strong { color: #fff; font-weight: 600; }
+.cgpt-sources { display: flex; gap: 0.4em; margin-top: 0.85em; flex-wrap: wrap; }
+.cgpt-source {
+  font-size: 0.7em;
+  color: #b4b4b4;
+  background: #2f2f2f;
+  border-radius: 0.5em;
+  padding: 0.22em 0.6em;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.cgpt-source .fav { width: 11px; height: 11px; border-radius: 50%; background: #888; flex-shrink: 0; }
+/* Google KI-Modus / Gemini Mockup: tabs, answer, link highlights, source chips */
+.gai-mockup {
+  background: #1c1c1e;
+  border-radius: 0.7em;
+  padding: 1.2em 1.4em;
+  font-family: Arial, sans-serif;
+  color: #e3e3e3;
+}
+.gai-tabs { display: flex; gap: 1.1em; font-size: 0.7em; color: #9aa0a6; margin-bottom: 0.9em; border-bottom: 1px solid #3c4043; }
+.gai-tabs span { padding-bottom: 0.55em; }
+.gai-tabs .active { color: #e8eaed; font-weight: 700; border-bottom: 2px solid #8ab4f8; }
+.gai-q { display: flex; justify-content: flex-end; margin-bottom: 0.9em; }
+.gai-q span { background: #303134; color: #e8eaed; padding: 0.5em 1em; border-radius: 1.2em; font-size: 0.8em; }
+.gai-a { font-size: 0.8em; color: #e3e3e3; line-height: 1.65; }
+.gai-a .lnk { color: #8ab4f8; }
+.gai-list { margin-top: 0.75em; display: flex; flex-direction: column; gap: 0.55em; }
+.gai-item { font-size: 0.78em; line-height: 1.5; color: #c8c8c8; }
+.gai-item strong { color: #e8eaed; }
+.gai-chip { display: inline-flex; align-items: center; gap: 0.3em; font-size: 0.68em; color: #9aa0a6; background: #2a2a2c; border-radius: 0.45em; padding: 0.12em 0.5em; margin-left: 0.3em; }
+.gai-chip .fav { width: 10px; height: 10px; border-radius: 50%; background: #777; flex-shrink: 0; }
+/* KI-Loch: missing brand/entity in generated answer */
+.ki-missing {
+  background: color-mix(in srgb, var(--swatch--error) 12%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--swatch--error) 45%, transparent);
+  border-radius: 0.5em;
+  padding: 0.8em 1em;
+  margin-top: 0.85em;
+  font-size: 0.78em;
+  color: var(--swatch--error);
+  display: flex;
+  gap: 0.6em;
+  align-items: flex-start;
+}
+.ki-missing .icon { font-size: 16px; flex-shrink: 0; line-height: 1.3; }
+/* Vergleichstabelle */
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--fg2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+.tbl td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--fg); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl .highlight-row td { background: rgba(232,99,43,0.06); }
+/* Mobile */
+@media (max-width: 768px) {
+  .compare-wrap { grid-template-columns: 1fr; gap: 16px; }
+  .compare-arrow { padding-top: 0; transform: rotate(90deg); font-size: 24px; }
+  .serp-mockup { padding: 20px; max-width: 100%; }
+  .serp-title { font-size: 15px; }
+  .serp-desc { font-size: 12px; }
+  .serp-searchbar { padding: 8px 14px; }
+  .serp-searchbar input { font-size: 12px; }
+  .local-pack { max-width: 100%; padding: 16px; }
+  .benchmark { max-width: 100%; }
+  .bench-label { width: 100px; font-size: 11px; }
+  .bench-track { height: 20px; }
+  .ai-mockup { padding: 16px; max-width: 100%; }
+  .ai-question, .ai-answer { padding: 12px 14px; font-size: 13px; }
+  .ai-avatar { width: 24px; height: 24px; font-size: 10px; }
+  .ai-missing { padding: 12px 14px; font-size: 12px; }
+  .cgpt-mockup, .gai-mockup { padding: 16px; max-width: 100%; }
+  .ki-missing { padding: 12px 14px; font-size: 12px; }
+  .impact-card .flex.center.gap-24 { flex-direction: column; text-align: center; gap: 16px; }
+  .impact-card .impact-value { font-size: 56px !important; }
+}

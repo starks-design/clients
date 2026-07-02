@@ -1,0 +1,907 @@
+/* ============================================================
+   STARKS.DESIGN CORE.CSS v2
+   Single Source of Truth — Tokens, Typografie, Utilities, Komponenten
+   Quelle: starks-design-system/SKILL.md
+   ------------------------------------------------------------
+   Enthält NICHT:
+   - Slide-Maße (--slide-w, --slide-h, .slide width/height) → Template
+   - Theme-Default in :root → Template setzt u-theme-dark/light
+   - Mobile-Kaskade (@media max-width: 768px) → starks-present
+   - Print-CSS (@media print) → starks-pdf
+   - Slide-Toolbar (Dev-Tool) → starks-pdf Template
+   - Body-Stacking (vertical slide-gallery) → starks-pdf Template
+   ============================================================ */
+
+
+/* ============================================================
+   FONTS — Inter 4.1 (Base64 embedded, variable font)
+   Google Fonts strippt OpenType-Features — NIEMALS ueber CDN laden.
+   Inter regular + italic sind hier inline eingebettet.
+   Azeret Mono laeuft aktuell im System-Monospace-Fallback.
+   ============================================================ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('InterVariable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('InterVariable-Italic.woff2') format('woff2');
+}
+/* Azeret Mono: aktuell NICHT eingebettet — System-Monospace Fallback
+   greift (Menlo auf macOS, Consolas/Courier sonst). Bei Bedarf
+   @font-face mit Base64 hier einfuegen. */
+
+
+/* ============================================================
+   UNIVERSAL RESET
+   ============================================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  vertical-align: bottom;
+}
+
+
+/* ============================================================
+   OSMO FLUID SYSTEM + ROOT VARIABLES
+   Alle Werte in em/clamp — nur Container-Grenzen, Border und
+   Slide-Maße dürfen px sein.
+   ============================================================ */
+:root {
+  /* --- OSMO Fluid Basis --- */
+  --size-unit: 16;
+  --size-container-ideal: 1920;
+  --size-container-min: 992px;
+  --size-container-max: 2540px;
+  --size-container: clamp(var(--size-container-min), 100vw, var(--size-container-max));
+  /* FLUID: size-font skaliert mit Container-Breite (Lumos/OSMO Formel).
+     Bei Container 1920 → 16px, bei 992 → 8.27px, bei 2540 → 21.17px.
+     Templates mit fixem Format (pdf 16:9, A4) ueberschreiben das
+     body-scoped mit fixem Wert fuer Playwright-Export. */
+  --size-font: calc(var(--size-container) / (var(--size-container-ideal) / var(--size-unit)));
+
+  /* --- Grid (12 Spalten) --- */
+  --site--column-count: 12;
+  --site--gutter: 1em;
+  --site--margin: calc(var(--size-font) * 5);
+
+  /* --- Layout (em, skaliert mit --size-font) --- */
+  --edge-pad:   4em;
+  --pad-top:    5em;
+  --pad-bottom: 1.5em;
+  --grid-gap:   1em;
+
+  /* --- Neutrale Pole --- */
+  --swatch--color-neutral-00:  #f1ebe5;
+  --swatch--color-neutral-100: #0d0b0b;
+
+  /* --- Neutrale Stufen (color-mix, 20 Zwischenstufen) --- */
+  --swatch--color-neutral-05:  color-mix(in srgb, var(--swatch--color-neutral-00) 95%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-10:  color-mix(in srgb, var(--swatch--color-neutral-00) 90%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-15:  color-mix(in srgb, var(--swatch--color-neutral-00) 85%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-20:  color-mix(in srgb, var(--swatch--color-neutral-00) 80%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-25:  color-mix(in srgb, var(--swatch--color-neutral-00) 75%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-30:  color-mix(in srgb, var(--swatch--color-neutral-00) 70%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-35:  color-mix(in srgb, var(--swatch--color-neutral-00) 65%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-40:  color-mix(in srgb, var(--swatch--color-neutral-00) 60%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-45:  color-mix(in srgb, var(--swatch--color-neutral-00) 55%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-50:  color-mix(in srgb, var(--swatch--color-neutral-00) 50%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-55:  color-mix(in srgb, var(--swatch--color-neutral-00) 45%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-60:  color-mix(in srgb, var(--swatch--color-neutral-00) 40%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-65:  color-mix(in srgb, var(--swatch--color-neutral-00) 35%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-70:  color-mix(in srgb, var(--swatch--color-neutral-00) 30%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-75:  color-mix(in srgb, var(--swatch--color-neutral-00) 25%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-80:  color-mix(in srgb, var(--swatch--color-neutral-00) 20%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-85:  color-mix(in srgb, var(--swatch--color-neutral-00) 15%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-90:  color-mix(in srgb, var(--swatch--color-neutral-00) 10%, var(--swatch--color-neutral-100));
+  --swatch--color-neutral-95:  color-mix(in srgb, var(--swatch--color-neutral-00)  5%, var(--swatch--color-neutral-100));
+
+  /* --- Brand-Farben (einmal hier ändern → alles ändert sich) --- */
+  --swatch--brand:           #C2A878;
+  --swatch--brand-secondary: #5E2436;
+  --swatch--brand-dark:      color-mix(in srgb, var(--swatch--brand) 60%, var(--swatch--color-neutral-100));
+  --swatch--brand-light:     color-mix(in srgb, var(--swatch--brand) 20%, var(--swatch--color-neutral-00));
+
+  /* --- Semantische Farben --- */
+  --swatch--success: #2ECC71;
+  --swatch--warning: #F39C12;
+  --swatch--error:   #E74C3C;
+  --swatch--webflow: #146EF5;
+  --swatch--lime:    #c6fb50;
+
+  /* --- Semantische Hintergründe (color-mix 15% transparent) --- */
+  --swatch--success-bg: color-mix(in srgb, var(--swatch--success) 15%, transparent);
+  --swatch--warning-bg: color-mix(in srgb, var(--swatch--warning) 15%, transparent);
+  --swatch--error-bg:   color-mix(in srgb, var(--swatch--error)   15%, transparent);
+
+  /* --- Typografie — Fonts --- */
+  --font-primary:   'Inter', 'Inter Variable', -apple-system, Arial, sans-serif;
+  --font-secondary: 'Azeret Mono', 'Azeret Mono Variable', monospace;
+
+  /* --- Typografie — OpenType Features --- */
+  --font-features: "zero" 1, "cv11" 1, "cv12" 1, "cv13" 1, "ss01" 1, "ss09" 1, "dlig" 1;
+  /* "zero" = Slashed Zero
+     "cv11" = Single-storey a
+     "cv12" = (Inter 4.x Variante)
+     "cv13" = (Inter 4.x Variante)
+     "ss01" = Stylistic Set 1
+     "ss09" = Stylistic Set 9 (Flat-top 3)
+     "dlig" = Discretionary Ligatures */
+
+  /* --- Typografie — Größen (em) --- */
+  --text-bg:      50em;     /* dekorative Background-Zahlen */
+  --text-max:     8em;      /* Trigger-Zahlen, Donut-Score */
+  --text-display: 5em;
+  --text-h1:      4em;
+  --text-h2:      2.75em;
+  --text-h3:      2em;
+  --text-h4:      1.5em;
+  --text-h5:      1.25em;
+  --text-h6:      1em;
+  --text-large:   1.5em;
+  --text-medium:  1.25em;
+  --text-main:    1em;
+  --text-small:   0.75em;
+  --text-tiny:    0.65em;
+  --text-mono:    0.75em;
+
+  /* --- Trim-Werte pro Schrift (vertikales Alignment) --- */
+  --trim-top-inter:      0.37em;
+  --trim-bottom-inter:   0.35em;
+  --trim-top-azeret:     0.42em;
+  --trim-bottom-azeret:  0.37em;
+
+  /* --- Spacing (em-Stufen) --- */
+  --space-1: 0.5em;
+  --space-2: 0.75em;
+  --space-3: 1em;
+  --space-4: 1.5em;
+  --space-5: 2em;
+  --space-6: 2.5em;
+  --space-7: 3em;
+  --space-8: 4em;
+
+  /* --- Radius --- */
+  --radius-small: 0.5em;
+  --radius-main:  1em;
+  --radius-round: 100vw;
+
+  /* --- Border (einziger 1px-Wert außer Slide-Maß) --- */
+  --border-width--main: 1px;
+
+  /* --- Easing (Signatur-Kurve) --- */
+  --ease-starks: cubic-bezier(0.625, 0.05, 0, 1);
+
+  /* --- Logo-Größen (em) --- */
+  --logo-vs-size:  8em;
+  --logo-type-w:   5em;
+  --logo-tri-w:    1em;
+
+  /* --- Sidebar-Breite (em — skaliert mit --size-font) --- */
+  --sidebar-w:            17em;   /* expanded, zeigt Nummer + Titel */
+  --sidebar-w-collapsed:  4.5em;  /* nur Nummer sichtbar */
+
+  /* --- Footer --- */
+  --foot-border:   var(--border-width--main);
+  --foot-pad-top:  0.5em;
+}
+
+
+/* ============================================================
+   THEMES — u-theme-dark, u-theme-light
+   Kein Default in :root. Templates setzen auf body oder .slide.
+   ============================================================ */
+.u-theme-dark {
+  --_theme---bg-00:          var(--swatch--color-neutral-100);
+  --_theme---bg-03:          color-mix(in srgb, var(--swatch--color-neutral-100) 97%, #ffffff);
+  --_theme---bg-05:          var(--swatch--color-neutral-95);
+  --_theme---bg-10:          var(--swatch--color-neutral-90);
+  --_theme---text:           var(--swatch--color-neutral-00);
+  --_theme---text-secondary: var(--swatch--color-neutral-70);
+  --_theme---text-faded:     var(--swatch--color-neutral-50);
+  --_theme---border:         var(--swatch--color-neutral-80);
+  --_theme---brand:          var(--swatch--brand);
+  --_theme---brand-s:        var(--swatch--brand-secondary);
+}
+
+.u-theme-light {
+  --_theme---bg-00:          #ffffff;
+  --_theme---bg-03:          color-mix(in srgb, #ffffff 97%, var(--swatch--color-neutral-100));
+  --_theme---bg-05:          var(--swatch--color-neutral-05);
+  --_theme---bg-10:          var(--swatch--color-neutral-10);
+  --_theme---text:           var(--swatch--color-neutral-100);
+  --_theme---text-secondary: var(--swatch--color-neutral-30);
+  --_theme---text-faded:     var(--swatch--color-neutral-50);
+  --_theme---border:         var(--swatch--color-neutral-20);
+  --_theme---brand:          var(--swatch--brand);
+  --_theme---brand-s:        var(--swatch--brand-secondary);
+}
+
+.u-theme-inherit { /* Erbt alle Werte vom Elternelement */ }
+
+
+/* ============================================================
+   GLOBAL RESETS
+   ============================================================ */
+html {
+  -webkit-font-smoothing: antialiased;
+  scrollbar-width: none;
+  scroll-behavior: initial;
+}
+html::-webkit-scrollbar { display: none; }
+
+body {
+  font-family: var(--font-primary);
+  font-feature-settings: var(--font-features);
+  -webkit-font-smoothing: antialiased;
+  -ms-overflow-style: none;
+}
+body::-webkit-scrollbar { display: none; }
+
+h1, h2, h3, h4, h5, h6, p, blockquote, label {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Utility: Azeret Mono explizit (fuer Code, Zahlen, pseudo-Kennungen).
+   Inline "font-family:var(--font-secondary)" ist NICHT noetig — einfach .mono setzen. */
+.mono { font-family: var(--font-secondary); letter-spacing: 0; }
+
+svg { max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button {
+  background-color: unset;
+  padding: unset;
+  text-align: inherit;
+  border: none;
+  font: inherit;
+}
+button:not(:disabled) { cursor: pointer; }
+
+
+/* ============================================================
+   SELECTION
+   ============================================================ */
+::selection {
+  background-color: var(--_theme---brand);
+  color: var(--_theme---text-secondary);
+  text-shadow: none;
+}
+
+
+/* ============================================================
+   TYPOGRAFIE-KLASSEN
+   Alle em-basiert, keine px, erben font-feature-settings vom body.
+   Font Trim via ::before/::after (Lumos-Mechanismus):
+   flow-root isoliert den Formatting Context, margin-bottom auf
+   ::before und ::after schneidet den Leading-Raum weg.
+   ============================================================ */
+.max     { font-size: var(--text-max);     font-weight: 800; line-height: 1.0; letter-spacing: -0.05em; }
+.display { font-size: var(--text-display); font-weight: 800; line-height: 1.0; letter-spacing: -0.05em; }
+.h1      { font-size: var(--text-h1);      font-weight: 700; line-height: 1.0; letter-spacing: -0.03em; }
+.h2      { font-size: var(--text-h2);      font-weight: 700; line-height: 1.0; letter-spacing: -0.03em; }
+.h3      { font-size: var(--text-h3);      font-weight: 600; line-height: 1.2; letter-spacing: -0.03em; }
+.h4      { font-size: var(--text-h4);      font-weight: 600; line-height: 1.3; }
+.h5      { font-size: var(--text-h5);      font-weight: 600; line-height: 1.4; }
+.h6      { font-size: var(--text-h6);      font-weight: 600; line-height: 1.4; }
+.large   { font-size: var(--text-large);   font-weight: 400; line-height: 1.5; }
+.medium  { font-size: var(--text-medium);  font-weight: 400; line-height: 1.5; }
+.body    { font-size: var(--text-main);    font-weight: 400; line-height: 1.5; }
+.body-sm { font-size: var(--text-small);   font-weight: 400; line-height: 1.5; }
+.small   { font-size: var(--text-small);   font-weight: 400; line-height: 1.5; }
+.caption { font-size: var(--text-tiny);    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Inter-Klassen: Trim-Werte setzen */
+.max, .display, .h1, .h2, .h3, .h4, .h5, .h6,
+.large, .medium, .body, .body-sm, .small {
+  display: flow-root;
+  font-optical-sizing: auto;
+  --_trim-top:    var(--trim-top-inter);
+  --_trim-bottom: var(--trim-bottom-inter);
+}
+
+.eyebrow {
+  font-family: var(--font-secondary);
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--_theme---text-secondary);
+  margin-bottom: 0.5em;
+  display: flow-root;
+  font-optical-sizing: auto;
+  --_trim-top:    var(--trim-top-azeret);
+  --_trim-bottom: var(--trim-bottom-azeret);
+}
+
+/* Font Trim — ::before schneidet Leading oben, ::after unten */
+.max::before, .display::before, .h1::before, .h2::before, .h3::before,
+.h4::before, .h5::before, .h6::before, .large::before, .medium::before,
+.body::before, .body-sm::before, .small::before, .eyebrow::before {
+  content: "";
+  display: table;
+  margin-bottom: calc(-0.5lh + var(--_trim-top));
+}
+.max::after, .display::after, .h1::after, .h2::after, .h3::after,
+.h4::after, .h5::after, .h6::after, .large::after, .medium::after,
+.body::after, .body-sm::after, .small::after, .eyebrow::after {
+  content: "";
+  display: table;
+  margin-bottom: calc(-0.5lh + var(--_trim-bottom));
+}
+
+code {
+  font-family: var(--font-secondary);
+  font-size: 0.85em;
+}
+
+
+/* ============================================================
+   COLOR UTILITIES
+   ============================================================ */
+.muted   { color: var(--_theme---text-secondary); }
+.faded   { color: var(--_theme---text-faded); }
+.bold    { font-weight: 700; }
+.semi    { font-weight: 600; }
+.regular { font-weight: 400; }
+
+.brand   { color: var(--_theme---brand); }
+.brand-s { color: var(--_theme---brand-s); }
+.accent  { color: var(--_theme---brand); }
+
+.success { color: var(--swatch--success); }
+.warning { color: var(--swatch--warning); }
+.error   { color: var(--swatch--error); }
+
+/* Legacy-freundliche Aliase (gleiche Farbe, andere Namen) */
+.green   { color: var(--swatch--success); }
+.orange  { color: var(--swatch--warning); }
+.red     { color: var(--swatch--error); }
+
+
+/* ============================================================
+   SPACING UTILITIES (em, via Variablen)
+   ============================================================ */
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-7 { margin-top: var(--space-7); }
+.mt-8 { margin-top: var(--space-8); }
+
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-5 { margin-bottom: var(--space-5); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-7 { margin-bottom: var(--space-7); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+.gap-6 { gap: var(--space-6); }
+.gap-7 { gap: var(--space-7); }
+.gap-8 { gap: var(--space-8); }
+
+.p-1 { padding: var(--space-1); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-5 { padding: var(--space-5); }
+
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+.flex    { display: flex; }
+.col     { flex-direction: column; }
+.row     { flex-direction: row; }
+.wrap    { flex-wrap: wrap; }
+.grow    { flex: 1; }
+.shrink  { flex-shrink: 1; }
+.noshrink { flex-shrink: 0; }
+
+.center  { align-items: center; }
+.items-start  { align-items: flex-start; }
+.items-end    { align-items: flex-end; }
+.items-stretch { align-items: stretch; }
+
+.middle  { justify-content: center; }
+.between { justify-content: space-between; }
+.around  { justify-content: space-around; }
+.start   { justify-content: flex-start; }
+.end     { justify-content: flex-end; }
+
+.grid-1   { display: grid; grid-template-columns: 1fr; gap: var(--grid-gap); }
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: var(--grid-gap); }
+.grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--grid-gap); }
+.grid-4   { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: var(--grid-gap); }
+.split-35 { display: grid; grid-template-columns: 35% 1fr; gap: var(--space-5); }
+.split-40 { display: grid; grid-template-columns: 40% 1fr; gap: var(--space-5); }
+.split-50 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+
+.w-100 { width: 100%; }
+.h-100 { height: 100%; }
+.w-fit { width: fit-content; }
+.z-1   { z-index: 1; }
+.z-2   { z-index: 2; }
+.z-neg { z-index: -1; }
+
+.rel  { position: relative; }
+.abs  { position: absolute; }
+.fix  { position: fixed; }
+
+.hidden     { display: none; }
+.block      { display: block; }
+.inline     { display: inline; }
+.inline-block { display: inline-block; }
+.contents   { display: contents; }
+
+.overflow-hidden  { overflow: hidden; }
+.overflow-visible { overflow: visible; }
+.overflow-auto    { overflow: auto; }
+
+
+/* ============================================================
+   RADIUS UTILITIES
+   ============================================================ */
+.u-radius-none  { border-radius: 0; }
+.u-radius-small { border-radius: var(--radius-small); }
+.u-radius-main  { border-radius: var(--radius-main); }
+.u-radius-round { border-radius: var(--radius-round); }
+
+
+/* ============================================================
+   KOMPONENTEN — CARDS
+   Regeln:
+   - .card (bg-00 + Border) = für seltene Akzente
+   - .card-filled = Standard für neutrale Info-Cards
+   - .card-filled-<severity> = Findings mit farblichem Hintergrund
+   - .card-left-accent = Maßnahme-Cards (dicker Brand-Strich links)
+   ============================================================ */
+
+/* Standard (bg-00 + Border) */
+.card {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-00);
+  border: 1px solid var(--_theme---border);
+}
+.card-accent    { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--_theme---brand); }
+.card-success   { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--swatch--success); }
+.card-error     { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--swatch--error); }
+.card-highlight { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 2px solid var(--_theme---brand); }
+.card-outline   { border-radius: var(--radius-main); padding: var(--space-5); background: transparent; border: 1px solid var(--_theme---border); }
+
+/* Filled (eingefärbter Hintergrund, keine Border) */
+.card-filled {
+  border-radius: var(--radius-main);
+  padding: var(--space-5);
+  background: var(--_theme---bg-05);
+  border: none;
+}
+.card-filled-success { border-radius: var(--radius-main); padding: var(--space-5); background: color-mix(in srgb, var(--swatch--success) 6%, var(--_theme---bg-00)); border: none; }
+.card-filled-warning { border-radius: var(--radius-main); padding: var(--space-5); background: color-mix(in srgb, var(--swatch--warning) 6%, var(--_theme---bg-00)); border: none; }
+.card-filled-error   { border-radius: var(--radius-main); padding: var(--space-5); background: color-mix(in srgb, var(--swatch--error)   6%, var(--_theme---bg-00)); border: none; }
+.card-filled-brand   { border-radius: var(--radius-main); padding: var(--space-5); background: color-mix(in srgb, var(--_theme---brand) 6%, var(--_theme---bg-00)); border: none; }
+
+/* Left Accent (dicker Strich links, bg-00 + Border) */
+.card-left-accent  { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--_theme---border); border-left: 4px solid var(--_theme---brand); }
+.card-left-success { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--_theme---border); border-left: 4px solid var(--swatch--success); }
+.card-left-warning { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--_theme---border); border-left: 4px solid var(--swatch--warning); }
+.card-left-error   { border-radius: var(--radius-main); padding: var(--space-5); background: var(--_theme---bg-00); border: 1px solid var(--_theme---border); border-left: 4px solid var(--swatch--error); }
+
+
+/* ============================================================
+   ACCENT-LINE + DIVIDER
+   ============================================================ */
+.accent-line {
+  width: 3em;
+  height: 3px;
+  background: var(--_theme---text-secondary);
+  border-radius: 2px;
+}
+.accent-line-error   { width: 3em; height: 3px; background: var(--swatch--error);   border-radius: 2px; }
+.accent-line-success { width: 3em; height: 3px; background: var(--swatch--success); border-radius: 2px; }
+.accent-line-warning { width: 3em; height: 3px; background: var(--swatch--warning); border-radius: 2px; }
+.accent-line-brand   { width: 3em; height: 3px; background: var(--_theme---brand);  border-radius: 2px; }
+
+.divider {
+  height: var(--border-width--main);
+  background: var(--_theme---border);
+  opacity: 0.5;
+  width: 100%;
+  border: none;
+}
+
+
+/* ============================================================
+   DONUT CHART
+   SVG: circle r=50, Umfang=314.
+   Berechnung: stroke-dasharray="(score/100*314) 314"
+   ============================================================ */
+.donut     { position: relative; }
+.donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.donut-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.donut-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ============================================================
+   SCORE-BARS
+   0-49 → error, 50-79 → warning, 80-100 → success
+   ============================================================ */
+.score-bar {
+  width: 100%;
+  height: 0.5em;
+  background: var(--_theme---bg-10);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}
+.score-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-small);
+  transition: width 1s var(--ease-starks);
+}
+.score-bar-fill.success { background: var(--swatch--success); }
+.score-bar-fill.warning { background: var(--swatch--warning); }
+.score-bar-fill.error   { background: var(--swatch--error); }
+.score-bar-fill.brand   { background: var(--_theme---brand); }
+
+
+/* ============================================================
+   TAGS — Pill-Form, uppercase, Azeret Mono
+   ============================================================ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-round);
+  padding: 0.25em 0.75em;
+  font-family: var(--font-secondary);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  width: fit-content;
+  background: var(--_theme---bg-00);
+  color: var(--_theme---text-secondary);
+  border: 1px solid var(--_theme---border);
+}
+.tag-success { background: color-mix(in srgb, var(--swatch--success) 15%, transparent); color: var(--swatch--success); border-color: var(--swatch--success); }
+.tag-warning { background: color-mix(in srgb, var(--swatch--warning) 15%, transparent); color: var(--swatch--warning); border-color: var(--swatch--warning); }
+.tag-error   { background: color-mix(in srgb, var(--swatch--error)   15%, transparent); color: var(--swatch--error);   border-color: var(--swatch--error); }
+.tag-brand   { background: color-mix(in srgb, var(--swatch--brand)   15%, transparent); color: var(--swatch--brand);   border-color: var(--swatch--brand); }
+.tag-neutral { background: color-mix(in srgb, var(--_theme---text-secondary) 10%, transparent); color: var(--_theme---text-secondary); border-color: var(--_theme---text-secondary); }
+
+
+/* ============================================================
+   TABELLE
+   Wichtig: .tbl td setzt KEIN font-size — damit Klassen auf td
+   (.h4, .h5, etc.) greifen können (CSS-Spezifität).
+   ============================================================ */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  text-align: left;
+  font-family: var(--font-secondary);
+  font-size: var(--text-small);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--_theme---text-secondary);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 2px solid var(--_theme---border);
+}
+.tbl td {
+  padding: var(--space-2) var(--space-2);
+  border-bottom: var(--border-width--main) solid var(--_theme---border);
+  vertical-align: middle;
+}
+.tbl th:first-child,
+.tbl td:first-child { padding-left: 0; }
+.tbl tr:last-child td { border-bottom: none; }
+
+
+/* ============================================================
+   CHECK-LIST
+   ============================================================ */
+.check-list { list-style: none; padding: 0; }
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-width--main) solid var(--_theme---border);
+  font-size: var(--text-main);
+}
+.check-list li:last-child { border-bottom: none; }
+
+
+/* ============================================================
+   ICONS
+   ============================================================ */
+.i      { display: inline-flex; flex-shrink: 0; }
+.i svg  { width: 1.5em; height: 1.5em; }
+.i-sm svg { width: 1.25em; height: 1.25em; }
+.i-lg svg { width: 2em;    height: 2em; }
+.i.success { color: var(--swatch--success); }
+.i.warning { color: var(--swatch--warning); }
+.i.error   { color: var(--swatch--error); }
+.i.brand   { color: var(--_theme---brand); }
+
+
+/* ============================================================
+   BUTTONS
+   Primary = neutral (warm-white/black) — KEINE Brand-Farbe
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.75em 1.5em;
+  border-radius: var(--radius-round);
+  font-family: var(--font-primary);
+  font-size: var(--text-main);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s var(--ease-starks);
+}
+.btn-primary { background: var(--_theme---text); color: var(--_theme---bg-00); }
+.btn-outline { background: transparent; border: var(--border-width--main) solid var(--_theme---text); color: var(--_theme---text); }
+.btn-brand   { background: var(--_theme---brand); color: #ffffff; }
+.btn-webflow { background: var(--swatch--webflow); color: #ffffff; }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.875em;
+  font-weight: 500;
+  background: transparent;
+  color: var(--_theme---text);
+  border: var(--border-width--main) solid var(--_theme---border);
+  border-radius: var(--radius-round);
+  padding: 0.75em 1.5em;
+  cursor: pointer;
+}
+.btn-small { padding: 0.5em 1em; font-size: var(--text-small); }
+
+
+/* ============================================================
+   FORMS — Underline-Style (kein Box-Border)
+   ============================================================ */
+.form-input {
+  background: transparent;
+  border: none;
+  border-bottom: var(--border-width--main) solid var(--_theme---border);
+  padding: var(--space-2) 0;
+  font-family: var(--font-primary);
+  font-size: var(--text-main);
+  color: var(--_theme---text);
+  width: 100%;
+}
+.form-label {
+  font-family: var(--font-primary);
+  font-size: var(--text-small);
+  color: var(--_theme---text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+
+/* ============================================================
+   COVER-SLIDE — Logo-vs Position
+   (Logo-vs gehört IMMER oben rechts auf Cover)
+   ============================================================ */
+.logo-vs {
+  position: absolute;
+  top: 4.5em;
+  right: var(--edge-pad);
+  width: var(--logo-vs-size);
+  color: var(--_theme---text);
+}
+
+/* Cover Glow / Blobs (dekorativ, nur in Screen-Modi) */
+.cover-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.blob   { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12; }
+.blob-1 { width: 60%; height: 80%; background: var(--_theme---brand);  right: -10%; top: -20%; }
+.blob-2 { width: 40%; height: 50%; background: var(--swatch--warning); left: 30%; bottom: -10%; }
+
+
+/* ============================================================
+   FOOTER (auto-inject via JS)
+   ============================================================ */
+.foot-wrap { margin-top: auto; }
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: var(--foot-border) solid var(--_theme---border);
+  padding-top: var(--foot-pad-top);
+}
+.foot-left {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  font-size: var(--text-main);
+}
+.foot-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--text-main);
+}
+.foot-page    { font-family: var(--font-secondary); font-size: var(--text-main); color: var(--_theme---text-secondary); }
+.foot-company { font-size: var(--text-main); font-weight: 600; }
+.foot-project { font-size: var(--text-main); color: var(--_theme---text-faded); }
+
+
+/* ============================================================
+   LOGOTYPE — Inter Wortmarke "starks.design"
+   ============================================================ */
+.logotype {
+  font-family: var(--font-primary);
+  font-style: italic;
+  font-size: var(--text-small);
+  letter-spacing: -0.03em;
+  color: var(--_theme---text);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+}
+.logotype strong { font-weight: 900; }
+.logotype span   { font-weight: 400; letter-spacing: -0.06em; }
+
+/* Footer-Logotype (identisches Verhalten, eigene Klasse für Override-Kontext) */
+.foot-logo-type {
+  font-family: var(--font-primary);
+  font-style: italic;
+  font-size: var(--text-main);
+  letter-spacing: -0.03em;
+  color: var(--_theme---text);
+  white-space: nowrap;
+}
+.foot-logo-type strong { font-weight: 900; }
+.foot-logo-type span   { font-weight: 400; letter-spacing: -0.06em; }
+.foot-logo-tri {
+  width: var(--logo-tri-w);
+  color: var(--_theme---text);
+}
+
+
+/* ============================================================
+   SLIDE — Grundstruktur (universell, ohne fixe Maße)
+   Maße (--slide-w, --slide-h) + width/height werden im Template
+   format-spezifisch gesetzt (16:9, A4, 1:1, etc.).
+   ============================================================ */
+.slide {
+  background: var(--_theme---bg-00);
+  color: var(--_theme---text);
+  font-family: var(--font-primary);
+  padding: var(--pad-top) var(--edge-pad) var(--pad-bottom);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ============================================================
+   SECTION OPENER (Kapitel-Opener Hintergrundzahl)
+   ============================================================ */
+.section-bg-num {
+  position: absolute;
+  font-size: var(--text-bg);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 1;
+  color: var(--_theme---bg-05);
+  bottom: -0.15em;
+  right: -0.05em;
+  z-index: 0;
+  user-select: none;
+  transform: rotate(-30deg);
+  transform-origin: bottom right;
+}
+.section-num {
+  font-family: var(--font-secondary);
+  font-size: var(--text-tiny);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--_theme---text-secondary);
+  margin-bottom: 0;
+}
+
+
+/* ============================================================
+   TOC (Inhaltsverzeichnis)
+   .toc-list nimmt volle Slide-Hoehe, Items verteilen sich
+   gleichmaessig — egal ob 7 oder 12 Eintraege.
+   ============================================================ */
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  justify-content: space-between;
+  gap: 0;
+}
+.toc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75em 0;
+  border-bottom: var(--border-width--main) solid var(--_theme---border);
+  cursor: pointer;
+  transition: opacity 0.2s var(--ease-starks);
+  flex: 1 1 0;
+  min-height: auto;
+}
+.toc-item:hover      { opacity: 0.7; }
+.toc-item:last-child { border-bottom: none; }
+.toc-page {
+  font-family: var(--font-secondary);
+  font-size: var(--text-main);
+  color: var(--_theme---text-secondary);
+}
+
+
+/* ============================================================
+   SEVERITY
+   ============================================================ */
+.severity-critical { font-weight: 700; color: var(--swatch--error);            font-size: var(--text-small); }
+.severity-high     { font-weight: 700; color: var(--swatch--warning);          font-size: var(--text-small); }
+.severity-medium   { font-weight: 700; color: var(--_theme---text-secondary);  font-size: var(--text-small); }
