@@ -8,6 +8,7 @@
   gsap.registerPlugin(ScrollTrigger);
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches; // Touch-Geräte
   if (reduceMotion) document.documentElement.classList.add("no-motion");
 
   /* ---------- Text-Splitter (Wörter / Zeichen) ---------- */
@@ -33,9 +34,9 @@
       duration: 1.15,
       easing: (t) => 1 - Math.pow(1 - t, 3),
       syncTouch: true, // Smooth Scroll auch auf Touch/Mobile
-      syncTouchLerp: 0.06, // weicheres Nachziehen
-      touchMultiplier: 0.9, // etwas weniger Weg pro Wisch
-      touchInertiaMultiplier: 15, // deutlich weniger Nachschleudern (Default 35)
+      syncTouchLerp: 0.12, // direkter am Finger — kein Gummiband-Gefühl
+      touchMultiplier: 1,
+      touchInertiaMultiplier: 20, // sanfter Auslauf (Default 35)
     });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -142,8 +143,8 @@
     });
   }
 
-  /* ---------- Velocity-Skew (Motor-Vibe) ---------- */
-  if (!reduceMotion) {
+  /* ---------- Velocity-Skew (Motor-Vibe, nur Desktop) ---------- */
+  if (!reduceMotion && !coarsePointer) {
     const skewTargets = document.querySelectorAll("[data-skew]");
     if (skewTargets.length) {
       const proxy = { skew: 0 };
@@ -207,7 +208,9 @@
     const base = track.innerHTML;
     while (track.scrollWidth < window.innerWidth * 2.2) track.innerHTML += base;
     const tween = gsap.to(track, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
-    // Konstante Laufrichtung; Scroll-Velocity gibt nur sanften Tempo-Boost
+    // Touch: konstantes Tempo — Velocity-Signal ist dort zu sprunghaft
+    if (coarsePointer) return;
+    // Desktop: Scroll-Velocity gibt sanften Tempo-Boost, Richtung bleibt konstant
     let targetScale = 1;
     ScrollTrigger.create({
       trigger: mq, start: "top bottom", end: "bottom top",
